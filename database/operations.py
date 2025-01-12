@@ -1,6 +1,4 @@
-import psycopg2
-from psycopg2 import sql
-from django.contrib.auth.hashers import make_password,check_password
+
 
 user_select_fields = ""
 
@@ -36,16 +34,14 @@ user_select_fields = ""
 from django.db import connection
 import os
 import django
-from psycopg2 import sql
 
-from user.models import User
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')
-django.setup()
+# django.setup()
 
-def execute_select_query(query):
+def execute_select_query(query,filters=None):
         with connection.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query) if not filters else cursor.execute(query,filters)
                 rows = cursor.fetchall()
         return rows
 
@@ -70,49 +66,6 @@ def check_if_exists(query,values):
                 return cursor.fetchone()[0]
         
 
-def authenticate(email,password):
-        query = sql.SQL("""
-            SELECT *
-            FROM "User"
-            WHERE email = %s
-                """)
-        
-        with connection.cursor() as cursor:
-                cursor.execute (query,(email,))
-                result = cursor.fetchone()
-                if result:
-                        result = result[1:]
-                        fields = User.get_fields()
-                        data = {}
-                        for index,field in enumerate(fields):
-                                if result[index]:
-                                        data[field] = result[index] 
-                        user = User(**data)
-                        hashed_password =user.password
-                        if check_password(password,hashed_password):
-                                return user
-                return None
-        
-def get_user(email):
-        query = sql.SQL("""
-            SELECT *
-            FROM "User"
-            WHERE email = %s
-                """)
-        
-        with connection.cursor() as cursor:
-                cursor.execute (query,(email,))
-                result = cursor.fetchone()
-                if result:
-                        result = result[1:]
-                        fields = User.get_fields()
-                        data = {}
-                        for index,field in enumerate(fields):
-                                if result[index]:
-                                        data[field] = result[index] 
-                        user = User(**data)
-                        return user
-                return None
-                        
 
+                        
 

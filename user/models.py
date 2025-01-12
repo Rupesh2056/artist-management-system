@@ -3,6 +3,7 @@ import datetime
 from enum import Enum
 # Create your models here.
 from pydantic import BaseModel
+from database.operations import execute_select_query
 
 
 class GenderEnum(str,Enum):
@@ -47,9 +48,24 @@ class User(BaseModel):
         fields = self.get_fields()
         values = ("%s,"*len(fields))[:-1]
         return f'INSERT INTO "{self.__class__.__name__}" ({",".join(fields)}) VALUES ({values})'
-        # return f'INSERT INTO "{self.__class__.__name__}" ({",".join(self.get_fields())}) VALUES {self.get_values()}'
 
-    # def get_objec
+    @classmethod
+    def filter_from_db(cls,**kwargs):
+        fields = cls.get_fields()
+        queries = []
+        values = []
+        for key,val in kwargs.items():
+            if key in fields:
+                queries.append(f"{key} = %s ")
+                values.append(val)
+        sql_query = f'SELECT * FROM "{cls.__name__}" '        
+        if queries:
+            sql_query += "WHERE " + "AND".join(queries)
+            qs = execute_select_query(sql_query,tuple(values))
+        else:
+            qs = execute_select_query(sql_query)
+        return qs
+
 
 
 

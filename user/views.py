@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views import View
 
-from database.operations import authenticate, check_if_exists, execute_insert_query
+from database.operations import  execute_insert_query
+from user.db_utils import authenticate
 from user.forms import UserLoginForm, UserRegistrationForm
 from django.shortcuts import redirect
 
