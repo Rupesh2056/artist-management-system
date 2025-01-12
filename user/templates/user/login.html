@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card text-bg-light mb-3" >
+    {% comment %} <div class="card-header">Register</div> {% endcomment %}
+    <div class="card-body">
+      <h5 class="card-title">Login</h5>
+      <form action="" method="POST">
+        {% csrf_token %}
+        {% comment %} {{form.as_p}} {% endcomment %}
+        {% for field in form.visible_fields %}
+        <div class="col-md-6 fv-row fv-plugins-icon-container">
+            <p class="form-group">
+                <label for="{{field.auto_id}}">
+                    {{field.label}}
+                    {% if field.field.required %}
+                        <span class="text-danger"> *</span>
+                        {% endif %}
+
+                  </label>
+                  {{field}}
+
+                  {% for error in field.errors %}
+                  <span class="text-danger"> {{ error }}</span>
+                    {% endfor %}
+                    {% comment %} <p class="text-danger" style="color:red !important;">  {{field.errors}}</p> {% endcomment %}
+                
+
+            </p>
+        </div>
+        {% endfor %}
+     
+        <button type="submit" class="btn btn-primary btn-sm">Login</button>
+    </form>
+    </div>
+  </div>
+
+{% endblock %}
