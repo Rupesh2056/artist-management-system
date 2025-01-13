@@ -57,11 +57,12 @@ class UserRegistrationView(View):
             return render(request,"user/register.html",context)
         
 class UserLoginView(View):
+
     def dispatch(self, request, *args, **kwargs):
         if self.request.user:
             return redirect("index")
-            
         return super().dispatch(request, *args, **kwargs)
+
     def get(self,request,*args,**kwargs):
         context = {}
         context["form"] = UserLoginForm()
