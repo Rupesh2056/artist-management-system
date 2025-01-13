@@ -45,6 +45,12 @@ def execute_select_query(query,filters=None):
                 rows = cursor.fetchall()
         return rows
 
+def execute_select_first_query(query,filters=None):
+        with connection.cursor() as cursor:
+                cursor.execute(query) if not filters else cursor.execute(query,filters)
+                row = cursor.fetchone()
+        return row
+
 def execute_insert_query(query,values):
         with connection.cursor() as cursor:
                 cursor.execute(query,values)

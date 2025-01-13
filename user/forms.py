@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from database.operations import check_if_exists
 from django.contrib.auth.hashers import make_password,check_password
 from datetime import timezone,timedelta
+from user.models import User
 
 
 class UserRegistrationForm(BaseForm,forms.Form):
@@ -51,7 +52,7 @@ class UserRegistrationForm(BaseForm,forms.Form):
     
 
     def clean_email(self):
-        exists_query = f'select exists (select 1 from "User" where email = %s)'
+        exists_query = f'select exists (select 1 from {User.get_table_name()} where email = %s)'
         email = self.cleaned_data["email"]
         if check_if_exists(exists_query,(email,)):
             raise ValidationError("This Email is already Registered!")

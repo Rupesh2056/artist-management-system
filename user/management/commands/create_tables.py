@@ -28,10 +28,10 @@ class Command(BaseCommand):
             execute_create_enum_query(query)
  
         create_table_query = """
-            CREATE TABLE IF NOT EXISTS "User" (
+            CREATE TABLE IF NOT EXISTS user_user (
                 id SERIAL PRIMARY KEY, 
-                full_name VARCHAR(225) NOT NULL, 
-                email VARCHAR(255), 
+                full_name VARCHAR(225) NOT NULL , 
+                email VARCHAR(255) NOT NULL UNIQUE, 
                 address VARCHAR(255), 
                 phone VARCHAR(20), 
                 dob DATE, 
