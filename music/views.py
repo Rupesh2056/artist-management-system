@@ -26,8 +26,9 @@ class IndexView(LoginRequiredMixin,View):
         # # print(u)
         # # u.get_fields()
         # print(u.get_insert_query())
-        users = User.filter_from_db(gender="m")
-        print(users)
+        # users = User.filter_from_db(gender="m")
+        # print(users)
+
         return render(request,"music/index.html")
     
 

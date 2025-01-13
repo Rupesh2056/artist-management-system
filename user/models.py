@@ -4,7 +4,7 @@ from enum import Enum
 # Create your models here.
 from pydantic import BaseModel
 from base.exceptions import InvalidAttributeError
-from database.operations import execute_select_first_query, execute_select_query
+from database.operations import execute_insert_query, execute_select_first_query, execute_select_query
 
 class CustomBaseModel(BaseModel):
 
@@ -26,6 +26,7 @@ class CustomBaseModel(BaseModel):
         values = [self.__getattribute__(field) for field in self.get_fields()]
         return tuple(values)
     
+    @classmethod
     def get_insert_query(self) -> str:
         '''
         Prepares and Returns a psycopg2 query to insert record into a table.
@@ -49,7 +50,6 @@ class CustomBaseModel(BaseModel):
         #         if object_tuple[index]:
         #                 data[field] = object_tuple[index] 
 
-        print(data)
         obj = cls(**data)
         return obj
 
@@ -110,6 +110,15 @@ class CustomBaseModel(BaseModel):
         
     def __str__(self):
         return f"<{self.__class__.__name__}>"
+    
+
+    @classmethod
+    def create(cls,**kwargs):
+        obj = cls(**kwargs)
+        query  = cls.get_insert_query()
+        values = obj.get_values()
+        execute_insert_query(query,values)
+        return obj
 
         
 

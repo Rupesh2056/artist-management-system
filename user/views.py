@@ -47,14 +47,9 @@ class UserRegistrationView(View):
         if form.is_valid():
             print("form is valid")
             try:
-                user = User(**form.cleaned_data)
-                print(user)
-                print(user.model_dump())
+                user = User.create(**form.cleaned_data)
             except ValidationError as e:
                 print(str(e))
-            query  = user.get_insert_query()
-            values = user.get_values()
-            execute_insert_query(query,values)
             return redirect("/")
         else:
             context = {}
@@ -70,7 +65,6 @@ class UserLoginView(View):
     def get(self,request,*args,**kwargs):
         context = {}
         context["form"] = UserLoginForm()
-        print(request.user)
         return render(request,"user/login.html",context)
     
     def post(self,request,*args,**kwargs):

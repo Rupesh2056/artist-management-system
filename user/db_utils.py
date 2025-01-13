@@ -27,5 +27,5 @@ def authenticate(email,password):
                 return None
         
 def get_user(email):
-        return User.filter_from_db(email=email)
+        return User.get_from_db(email=email)
         

@@ -54,8 +54,7 @@ def execute_select_first_query(query,filters=None):
 def execute_insert_query(query,values):
         with connection.cursor() as cursor:
                 cursor.execute(query,values)
-        #         rows = cursor.fetchall()
-        # return rows
+
 
 def execute_create_table_query(query):
         with connection.cursor() as cursor:
