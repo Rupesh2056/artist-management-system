@@ -1,0 +1,31 @@
+<div class="d-flex align-items-center">
+
+   <!--begin::Thumbnail-->
+   <a class="symbol symbol-50px" {%if pk%} href="{{pk}}/" {%endif%}>
+   {%if image%} <span class="symbol-label"
+      style="background-image: url({{image.url}}); object-fit:contain;"
+      ></span>
+   {%endif%}
+   </a>
+   <!--end::Thumbnail-->
+
+
+   <div class="ms-5">
+      <a
+      {%if userlist%}
+      href="#"   
+      {%else%}href="{{pk}}/"{% endif %}
+         class="text-gray-800 text-hover-primary fs-5 fw-bolder"
+         data-kt-ecommerce-product-filter="product_name"
+         >{{title}}</a>
+   </div>
+
+   
+
+
+   
+
+
+
+
+</div>

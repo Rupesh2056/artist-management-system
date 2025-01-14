@@ -1,0 +1,9 @@
+<div class="menu-item">
+    {% comment %} <a class="menu-link {%if path in request.path%} active {%endif%}" href="{% if not params %}{%  url url %}{% else %}{% url url %}?{{params}}{% endif %}"> {% endcomment %}
+    <a class="menu-link {%if path in request.path%} active {%endif%}" href="{% if not params %}?{{params}}{% endif %}">
+        <span class="menu-icon">
+            <i class="{{icon}} fs-3"></i>
+        </span>
+        <span class="menu-title"> {{title}}</span>
+    </a>
+</div>

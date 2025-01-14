@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+.accordion {
+  width: 100%;
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.accordion .active {
+  background-color: #68716B;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 27px;
+  color: #FFFFFF;
+}
+
+.accordion-item {
+  background-color: #fff;
+  color: #111;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25);
+}
+
+.accordion-item-header {
+  padding: 0.5rem 3rem 0.5rem 1rem;
+  min-height: 3.5rem;
+  font-weight: 500;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.accordion-item-header::after {
+  content: "\002B";
+  font-size: 2rem;
+  position: absolute;
+  right: 1rem;
+}
+
+.accordion-item-header.active::after {
+  content: "\2212";
+}
+
+.accordion-item-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.accordion-item-body-content {
+  padding: 1rem;
+  line-height: 1.5rem;
+  border-top: 1px solid;
+  border-image: linear-gradient(to right, transparent, #34495e, transparent) 1;
+}
+
+.checkout-flex {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem
+}
+
+.checkout-flex .accordion {
+  width: 60%;
+}
+
+.checkout-flex .promo {
+  width: 20%;
+}
+
+
+.accordionInputLabel {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 1rem;
+  padding-left: 0.5rem;
+  flex-basis: 100%;
+  margin-bottom: 0.3rem;
+  width: 100%;
+}
+
+.accordionInputLabel input {
+  accent-color: #EF481E;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 5px;
+  margin-right: 1rem;
+}
+
+.accordionInputLabel label {
+  width: 97%;
+}
+
+.addressDiv .personalInfo {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0rem;
+}
+
+.addressDiv .personalInfo p{
+  margin: 0;
+}
+
+.personalInfo .name {
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #000000;
+  font-family: poppins, 'sans-serif';
+  padding-bottom: 0.5rem;
+}
+
+.labelP {
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #000000;
+  font-family: poppins, 'sans-serif';
+}
+
+.personalInfo .name .number {
+  margin-left: 2.3rem;
+}
+
+.personalInfo .edit {
+  color: #EF481E;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem
+}
+
+.addressDiv .location {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #808080;
+  padding-bottom: 0.8rem;
+  margin: 0;
+}
+
+.addressDiv .addNew {
+  display: flex;
+  align-items: center;
+  color: #EF481E;
+  margin-top: 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.accordionInputLabel button {
+  width: 149px;
+  height: 40px;
+  background: #BF6A4B;
+  border-radius: 5px;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  color: #FFFFFF;
+  outline: none;
+  border:none;
+}
+
+.addressDiv .addNew svg {
+  margin-right: 0.5rem;
+}
+
+@media(max-width:767px) {
+  html {
+    font-size: 14px;
+  }
+}
