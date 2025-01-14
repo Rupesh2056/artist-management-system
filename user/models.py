@@ -26,7 +26,7 @@ class User(CustomBaseModel):
     gender : GenderEnum = None
     user_type : UserTypeEnum = UserTypeEnum.Artist
     password : str
-    created_at : datetime.datetime = None
+    created_at : datetime.datetime = datetime.datetime.now()
     updated_at : datetime.datetime = datetime.datetime.now()
 
     class Config:  

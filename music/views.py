@@ -4,8 +4,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.hashers import make_password,check_password
 from base.mixins import LoginRequiredMixin
 from database.operations import execute_insert_query
+from music.models import Artist
 from user.models import User
-
 # Create your views here.
 
 class IndexView(LoginRequiredMixin,View):
@@ -28,8 +28,27 @@ class IndexView(LoginRequiredMixin,View):
         # print(u.get_insert_query())
         # users = User.filter_from_db(gender="m")
         # print(users)
+        # Artist.create(first_album_release_year=2000)
+        artist = Artist.get_from_db(id=1)
+        # print(artist.user.full_name)
+        context = {}
+        context["artist"] = artist
 
-        return render(request,"music/index.html")
+        return render(request,"music/index.html",context)
     
 
-# class CustomLoginView
+
+
+
+class ListView(View):
+    model = Artist
+    artists = Artist.get_from_db()
+
+    def get(self,request,*args,**kwargs):
+        objects = self.model.get_from_db()
+        context = {}
+        context[objects] = objects
+        return render(request,self.template_name,context=context)
+
+
+

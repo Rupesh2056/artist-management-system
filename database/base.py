@@ -72,6 +72,19 @@ class CRUDMixin:
         
 
 class CustomBaseModel(CRUDMixin,BaseModel):
+
+    class Config:  
+        use_enum_values = True
+
+    def __str__(self):
+        return f"<{self.__class__.__name__}>"
+    
+    def __repr__(self):
+        return f"<{self.__class__.__name__}>"
+
+    
+    class Meta:
+        read_only_fields = ["id"]
     
     def get_values(self,exclude=None):
         if exclude:
@@ -110,8 +123,6 @@ class CustomBaseModel(CRUDMixin,BaseModel):
         Eg: "Insert INTO user_user (full_name,email,...) VALUES (%s,%s,...)"
         '''
         fields = self.get_insert_fields()
-        print("hereee")
-        print(fields)
         values = ("%s,"*len(fields))[:-1]
         return f'INSERT INTO {self.get_table_name()} ({",".join(fields)}) VALUES ({values})'
     

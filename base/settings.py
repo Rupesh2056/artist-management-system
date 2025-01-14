@@ -172,3 +172,10 @@ SESSION_COOKIE_AGE = 1209600  # Two weeks (default)
 # Optional: Other session settings
 SESSION_SAVE_EVERY_REQUEST = False  # Save the session to file only if it was modified
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Sessions persist after browser closes
+
+
+
+STATIC_URL = "/staticfiles/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)

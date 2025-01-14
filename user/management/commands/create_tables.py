@@ -14,6 +14,7 @@ class Command(BaseCommand):
         enums = {
             "gender_enum" : ('m','f','o'),
             "user_type_enum" : ('admin','artist_manager','artist'),
+            "genre_enum" : ('rnb','classic','country','rock','jazz','funk','metal'),
         }
         for name,values in enums.items():
             query = f"""
@@ -27,7 +28,7 @@ class Command(BaseCommand):
 
             execute_create_enum_query(query)
  
-        create_table_query = """
+        create_user_table_query = """
             CREATE TABLE IF NOT EXISTS user_user (
                 id SERIAL PRIMARY KEY, 
                 full_name VARCHAR(225) NOT NULL , 
@@ -42,8 +43,46 @@ class Command(BaseCommand):
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             """
+        
+        create_artist_table_query = '''
+                CREATE TABLE IF NOT EXISTS music_artist (
+                    id SERIAL PRIMARY KEY,
+                    user_id int REFERENCES user_user(id),
+                    first_album_release_year int,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
-        execute_create_table_query(create_table_query)
+                );
+                '''
+        
+        create_album_table_query = '''
+                CREATE TABLE IF NOT EXISTS music_album (
+                    id SERIAL PRIMARY KEY,
+                    title VARCHAR(225) NOT NULL , 
+                    artist_id int REFERENCES music_artist(id),
+                    release_date DATE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    
+                );
+                '''
+        
+        create_music_table_query = '''
+                CREATE TABLE IF NOT EXISTS music_music (
+                    id SERIAL PRIMARY KEY,
+                    album_id int REFERENCES music_album(id),
+                    title VARCHAR(225) NOT NULL , 
+                    genre genre_enum,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    
+                );
+                '''
+
+        execute_create_table_query(create_user_table_query)
+        execute_create_table_query(create_artist_table_query)
+        execute_create_table_query(create_album_table_query)
+        execute_create_table_query(create_music_table_query)
         print("tables created.")
 
             
