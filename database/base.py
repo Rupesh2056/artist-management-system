@@ -83,17 +83,16 @@ class ForeignKeyMeta(ModelMetaclass,type):
         new_cls = super().__new__(cls, name, bases, dct)
 
         foreign_keys = getattr(new_cls.Meta, "foreign_keys", {})
-        for foreign_key_field,related_name in foreign_keys.items():
+        for foreign_key_field,related_model in foreign_keys.items():
             # Define a dynamic property for each foreign key
-            def foreign_key_property(self, related_name=related_name, foreign_key_field=foreign_key_field):
-                foreign_key_value = getattr(self, foreign_key_field, None)
-                if foreign_key_value is not None:
-                    related_class = related_name
-                    if related_class and hasattr(related_class, "get_from_db"):
-                        return related_class.get_from_db(id=foreign_key_value)
+            def foreign_key_property(self, related_model=related_model, foreign_key_field=foreign_key_field):
+                foreign_key_id = getattr(self, foreign_key_field, None)
+                if foreign_key_id is not None:
+                    if  hasattr(related_model, "get_from_db"):
+                        return related_model.get_from_db(id=foreign_key_id)
                 return None
             # Add the property to the class
-            setattr(new_cls, related_name.__name__.lower(), property(foreign_key_property))
+            setattr(new_cls, related_model.__name__.lower(), property(foreign_key_property))
 
         return new_cls
 
