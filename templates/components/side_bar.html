@@ -10,7 +10,9 @@
         </div>
 
         {%include 'components/menu_item.html' with path="index" url='index' title='Home' icon="bi bi-box" %}
-        {%include 'components/menu_item.html' with path="index" url='user_list' title='User' icon="bi bi-box" %}
+        {% if request.user.user_type == 'admin' %}
+            {%include 'components/menu_item.html' with path="index" url='user_list' title='User' icon="bi bi-box" %}
+        {% endif %}
         {%include 'components/menu_item.html' with path="index" url='index' title='Artist' icon="bi bi-box" %}
         {%include 'components/menu_item.html' with path="index" url='index' title='Album' icon="bi bi-box" %}
         {%include 'components/menu_item.html' with path="index" url='index' title='Music' icon="bi bi-box" %}

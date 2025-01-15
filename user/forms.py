@@ -5,13 +5,13 @@ from django.core.exceptions import ValidationError
 from database.operations import check_if_exists
 from django.contrib.auth.hashers import make_password,check_password
 from datetime import timezone,timedelta
-from user.models import User
+from user.models import User, UserTypeEnum
 
 
-class UserRegistrationForm(BaseForm,forms.Form):
+class UserForm(BaseForm,forms.Form):
     GENDER_CHOICES = (
         ("m","Male"),
-        ("f","FeMale"),
+        ("f","Female"),
         ("o","Other"),
         )
     full_name = forms.CharField(max_length=255)
@@ -22,16 +22,16 @@ class UserRegistrationForm(BaseForm,forms.Form):
         widget=forms.DateInput(format="%Y-%m-%d",
                                attrs={'type': 'date',
                                     #   'max': str((timezone.now() + timedelta(days=365)).date())
-                                      }),
+                                      },),
         help_text='Select a date',
         input_formats=["%Y-%m-%d"],
-        # validators=[validate_future_date],
+      
     )
     gender = forms.ChoiceField(choices=GENDER_CHOICES)
+
+class UserRegistrationForm(UserForm):
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput())
-
-
 
     def clean_password(self):
         data = self.cleaned_data["password"]
@@ -58,12 +58,31 @@ class UserRegistrationForm(BaseForm,forms.Form):
             raise ValidationError("This Email is already Registered!")
         return email
     
-    def clean_dob(self):
-        dob = self.cleaned_data["dob"]
-        print("dob")
-        print(dob)
-        return dob
 
+
+class UserCreationForm(UserRegistrationForm):
+    USER_TYPE_CHOICES = (
+        ("admin","Admin"),
+        ("artist_manager","Artist Manager"),
+        ("artist","Artist"),
+    )
+    user_type = forms.ChoiceField(choices = USER_TYPE_CHOICES)
+
+class UserUpdateForn(UserForm):
+    def __init__(self, *args,email=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        print("init emaik")
+        print(email)
+        self.email=email
+        
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if email != self.email:
+            exists_query = f'select exists (select 1 from {User.get_table_name()} where email = %s)'
+
+            if check_if_exists(exists_query,(email,)):
+                raise ValidationError("This Email is already Registered!")
+        return email
     
 
 class UserLoginForm(BaseForm,forms.Form):

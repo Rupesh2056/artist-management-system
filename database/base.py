@@ -200,6 +200,7 @@ class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
                 model = cls.initialize(row)
                 qs.append(model)
             return qs
+        return []  # for pagination. might have to change logic on other views accepting None
         
     
     @classmethod

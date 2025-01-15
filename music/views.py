@@ -35,15 +35,5 @@ class IndexView(LoginRequiredMixin,View):
 
 
 
-class ListView(View):
-    model = Artist
-    artists = Artist.get_from_db()
-
-    def get(self,request,*args,**kwargs):
-        objects = self.model.get_from_db()
-        context = {}
-        context[objects] = objects
-        return render(request,self.template_name,context=context)
-
 
 

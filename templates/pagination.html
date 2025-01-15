@@ -1,33 +1,118 @@
-<div class="row">
+<!--  for now refresh_content is used to determine whether whole body is to be swapped or just the table content because all tables haven't 
+  implemented the 'content swap' feature.  -->
+  <div class="row">
 
     <div class="col-sm-12 col-md-12 d-flex align-items-center justify-content-center justify-content-md-end">
         <div class="dataTables_paginate paging_simple_numbers" id="kt_customers_table_paginate">
             <ul class="pagination">
-                {% if page_obj.has_previous %}
-                <li class="paginate_button page-item previous" id="kt_customers_table_previous">
 
-                    <a href="?q={{request.GET.q|striptags}}&{% if request.GET.sort_date %}sort_date={{request.GET.sort_date}}&{% endif %}page=1" class="btn btn-primary">&laquo; First</a>
-                </li>
-                <li class="paginate_button page-item previous" id="kt_customers_table_previous">
-                    <a href="?q={{request.GET.q|striptags}}&{% if request.GET.sort_date %}sort_date={{request.GET.sort_date}}&{% endif %}page={{ page_obj.previous_page_number }}" class="btn btn-primary">Previous</a>
-                </li>
-                {% endif %}
-                <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                {% if hx_url %}
+                    {% if page_obj.has_previous %}
+                    <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                        <a
+                         hx-get="{% url hx_url %}?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}{% if refresh_content %}&search=true{% endif %}" 
+                         {% if refresh_content %} 
+                         hx-target = "#table-list"
+                         {% else %}
+                         hx-target = "#body-div"
+                         {% endif %}
+                          hx-push-url="true"
+                          {% if spinner %}
+                            hx-indicator="#spinner"
+                          {% endif %}
+                         class="btn btn-primary">&laquo; First
+                        </a>
+                        
+                    </li>
+                    <li class="paginate_button page-item previous" id="kt_customers_table_previous">
 
-                    <span class="current">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    </span>
-                </li>
+                        <a
+                         hx-get="{% url hx_url %}?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}{% if refresh_content %}&search=true{% endif %}"
+                         {% if refresh_content %} 
+                         hx-target = "#table-list"
+                         {% else %}
+                         hx-target = "#body-div"
+                         {% endif %}
+                         hx-push-url="true" 
+                         {% if spinner %}
+                            hx-indicator="#spinner"
+                          {% endif %}
+                         class="btn btn-primary">
+                          Previous
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="paginate_button page-item previous" id="kt_customers_table_previous">
 
-                {% if page_obj.has_next %}
-                <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+                    </li>
 
-                    <a href="?q={{request.GET.q|striptags}}&{% if request.GET.sort_date %}sort_date={{request.GET.sort_date}}&{% endif %}page={{ page_obj.next_page_number }}" class="btn btn-primary">Next</a>
-                </li>
-                <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                    {% if page_obj.has_next %}
+                    <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                        <a
+                         hx-get= "{% url hx_url  %}?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}{% if refresh_content %}&search=true{% endif %}"
+                         {% if refresh_content %} 
+                         hx-target = "#table-list"
+                         {% else %}
+                         hx-target = "#body-div"
+                         {% endif %}
+                          hx-push-url="true"
+                          {% if spinner %}
+                            hx-indicator="#spinner"
+                          {% endif %}
+                         class="btn btn-primary">
+                          Next
+                        </a>
+                    </li>
+                    <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                        <a 
+                        hx-get=" {% url hx_url %}?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}{% if refresh_content %}&search=true{% endif %}"
+                        {% if refresh_content %} 
+                         hx-target = "#table-list"
+                         {% else %}
+                         hx-target = "#body-div"
+                         {% endif %}
+                        hx-push-url="true"
+                        {% if spinner %}
+                            hx-indicator="#spinner"
+                          {% endif %}
+                        class="btn btn-primary">
+                         Last  &raquo;
+                        </a>
+                    </li>
+                    {% endif %}
 
-                    <a href="?q={{request.GET.q|striptags}}&{% if request.GET.sort_date %}sort_date={{request.GET.sort_date}}&{% endif %}page={{ page_obj.paginator.num_pages }}" class="btn btn-primary">Last &raquo;</a>
-                </li>
+
+                {% else %}
+
+
+                    {% if page_obj.has_previous %}
+                        <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                            <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="btn btn-primary">&laquo; First</a>
+
+                        </li>
+                        <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+
+                            <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="btn btn-primary">Previous</a>
+                        </li>
+                        {% endif %}
+                        <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+
+                            <span class="current">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                        <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                            <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="btn btn-primary"> Next</a>
+                        </li>
+                        <li class="paginate_button page-item previous" id="kt_customers_table_previous">
+                            <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="btn btn-primary"> Last  &raquo;</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
 
             </ul>
