@@ -178,9 +178,14 @@ class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
         queries = []
         values = []
         for key,val in kwargs.items():
-            if key in fields:
-                queries.append(f"{key} = %s ")
-                values.append(val)
+            actual_field_name = key.split('__')[0]
+            if  actual_field_name in fields:
+                if "__" in key:
+                    queries.append(f"Lower({actual_field_name}) LIKE %s ")
+                    values.append(f"%{val}%")
+                else:
+                    queries.append(f"{key} = %s ")
+                    values.append(val)
             else:
                 raise InvalidAttributeError(key,cls)
         sql_query = f'SELECT * FROM {cls.get_table_name()} '        

@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views import View
 
-from database.operations import  execute_insert_query
+from base.utils import PartialTemplateMixin
+from database.operations import  execute_db_query, execute_insert_query, execute_select_query
 from user.db_utils import authenticate
 from user.forms import UserLoginForm, UserRegistrationForm
 from django.shortcuts import redirect
@@ -9,6 +10,8 @@ from django.shortcuts import redirect
 from user.models import User
 from django.contrib.auth.views import LoginView
 from pydantic import ValidationError
+from django.urls import reverse_lazy
+
 # Create your views here.
 
 class UserRegistrationView_(View):
@@ -66,7 +69,7 @@ class UserLoginView(View):
     def get(self,request,*args,**kwargs):
         context = {}
         context["form"] = UserLoginForm()
-        return render(request,"user/login.html",context)
+        return render(request,"registration/login.html",context)
     
     def post(self,request,*args,**kwargs):
         form = UserLoginForm(request.POST)
@@ -92,3 +95,26 @@ class UserLogoutView(View):
         if 'user_email' in request.session:
             del request.session['user_email']
         return redirect("user_login")
+
+
+
+class UserMixin(PartialTemplateMixin):
+    form_class = UserRegistrationForm
+    model = User
+    success_url = reverse_lazy("job_list")
+    queryset = User.filter_from_db()
+    template_dir="user/"
+
+from django.views.generic import ListView
+class UserListView(UserMixin,ListView):
+    template_name = "user/user_list.html"
+
+    def get_queryset(self):
+        search = self.request.GET.get("q")
+        filter_args = {}
+        if search:
+            filter_args["full_name__icontains"] = f"%{search}%"
+
+        return User.filter_from_db(**filter_args)
+    
+# class UserCreateView(UserMixin,Cre)

@@ -9,10 +9,14 @@
             </div>
         </div>
 
-        {%include 'components/menu_item.html' with path="organization" url='org:organization_detail' title='Organization' icon="bi bi-bank" %}
+        {%include 'components/menu_item.html' with path="index" url='index' title='Home' icon="bi bi-box" %}
+        {%include 'components/menu_item.html' with path="index" url='user_list' title='User' icon="bi bi-box" %}
+        {%include 'components/menu_item.html' with path="index" url='index' title='Artist' icon="bi bi-box" %}
+        {%include 'components/menu_item.html' with path="index" url='index' title='Album' icon="bi bi-box" %}
+        {%include 'components/menu_item.html' with path="index" url='index' title='Music' icon="bi bi-box" %}
 
 
-        {%include 'components/menu_title.html' with title="Business"%}
+        {%include 'components/menu_title.html' with title="Music"%}
 
         
         <div data-kt-menu-trigger="click" class="menu-item menu-accordion {%if "province" in request.path or "district" in request.path or "city" in request.path or "standarddeliverycharge" in request.path or "productdeliverycharge" in request.path %} show{%endif%}">
@@ -25,10 +29,10 @@
             </span>
             <div class="menu-sub menu-sub-accordion menu-active-bg">
                 {% comment %} Commenting standard delivery charge of province, city and district {% endcomment %}
-                
+{% comment %}                 
                 {%include 'components/menu_item.html' with path="province/" url='delivery:province_list' title='Sub Item 1' icon="bi bi-geo" %}
                 {%include 'components/menu_item.html' with path="district/" url='delivery:district_list' title='Sub Item 2' icon="bi bi-geo" %}
-                
+                 {% endcomment %}
 
             </div>
         </div>

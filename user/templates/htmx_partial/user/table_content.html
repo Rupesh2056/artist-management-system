@@ -1,0 +1,75 @@
+
+<div class="card-body pt-0">
+    <!--begin::Table-->
+    <div id="kt_customers_table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+      <div class="table-responsive">
+        <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer" id="kt_customers_table">
+          <!--begin::Table head-->
+          <thead>
+            <!--begin::Table row-->
+            <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+              <th class="min-w-50px sorting" tabindex="0" >SN</th>
+              <th class="min-w-125px sorting" tabindex="0" >Full Name</th>
+              <th class="min-w-125px sorting" tabindex="0" >Email</th>
+             
+              <th class="min-w-125px sorting" tabindex="0" >User Type</th>
+              <th class="min-w-125px sorting" tabindex="0" >Level</th>
+
+              <th class="text-end min-w-70px sorting_disabled" rowspan="1" colspan="1" aria-label="Actions"
+                style="width: 200px;">Actions</th>
+            </tr>
+            <!--end::Table row-->
+          </thead>
+          <tbody class="fw-bold text-gray-600">
+
+              {% for object in object_list %}
+                <tr class="odd" id="obj-{{object.pk}}">
+                    <td>
+                        {% if  request.GET.page%}
+                        {{forloop.counter}}
+                        {% else %}
+                        {{forloop.counter}}
+                        {% endif %}
+                     </td>
+                     <td>
+                      {% comment %} <a
+                      class="link cursor-pointer"
+                      hx-get="{% url 'user_detail' object.pk %}" 
+                      hx-push-url = "true"
+                      hx-target="#body-div"
+                       > {% endcomment %}
+                        <a>
+                      {{object.full_name}}
+                      </a>
+                     </td>
+                     <td>{{object.email}}</td>
+                     <td>{{object.created_at}}</td>
+                     
+                     <td>{{object.user_type}}</td>
+                     <td>{{object.job_level_str}}</td>
+                     <td>{{object.deadline}}</td>
+
+                    <td class="text-end ">
+                            {% comment %} {% include 'htmx_partial/components/view_action.html' with hx_url="job_detail" %}
+                            {% include 'htmx_partial/components/update_action.html' with hx_url="job_update" %} {% endcomment %}
+                       
+                            {% comment %} <a onclick="remove({{object.pk}},'{% url "job_delete" %}','{{object}}',)" class="btn btn-sm btn-danger">
+                                Delete
+                            </a> {% endcomment %}
+                    </td>
+              </tr>
+              {%empty%}
+              {% include 'components/empty.html' with  title="User"%}
+            {% endfor %}
+         
+          </tbody>
+          <!--end::Table body-->
+        </table>
+      </div>
+    {%if object_list%}
+      {% include 'pagination.html' with hx_url="user_list" %}
+    {%endif%}
+    </div>
+    <!--end::Table-->
+  </div>
+  <!--end::Card body-->

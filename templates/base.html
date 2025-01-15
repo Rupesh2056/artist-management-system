@@ -10,6 +10,8 @@
       <meta property="og:site_name" content="Cloco" />
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <script src="https://unpkg.com/htmx.org@2.0.1" integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/" crossorigin="anonymous"></script>
+   
    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
 
@@ -146,7 +148,12 @@
                   <!--begin::Post-->
                   <div class="post d-flex flex-column-fluid" id="kt_post">
                      <!--begin::Container-->
-                     <div id="kt_content_container" class="container-xxl"> {%block content%} {%endblock%} </div>
+                     
+                        <div id="kt_content_container" class="container-xxl"> 
+                           <div id="body-div" hx-history-elt class="" > 
+                              {%block content%} {%endblock%}
+                         </div>
+                        </div>
                      <!--end::Container-->
                   </div>
                   <!--end::Post-->

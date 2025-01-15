@@ -47,8 +47,11 @@ CUSTOM_APPS = [
     "music",
     "user"
 ]
+THIRD_PARTY_APPS = [
+    "django_htmx",
+]
 
-INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS
+INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,6 +62,7 @@ MIDDLEWARE = [
     'base.middleware.CustomAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'base.urls'
