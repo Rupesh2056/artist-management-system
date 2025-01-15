@@ -13,8 +13,8 @@ class GenreEnum(str,Enum):
     Country = "country"
     Rock = "rock"
     Jazz = "jazz"
-    funk = "Funk"
-    metal = "Metal"
+    Funk = "funk"
+    Metal = "metal"
 
 class Artist(CustomBaseModel):
     id : int = None
@@ -25,30 +25,24 @@ class Artist(CustomBaseModel):
 
 
     class Meta:
-        foreign_keys = {"user":"user_id"}
-
-    def user(self):
-        if self.user_id:
-            return User.get_from_db(id=self.user_id)
-        
-    # def __getattribute__(self, name):
-    #     if name in self.Meta.foreign_keys:
-    #         id = self.__getattribute__(self.Meta.foreign_keys[name])
-    #         if id:
-    #             return User.get_from_db(id=id)
-
-        # return super().__getattribute__(name)
+        foreign_keys = {"user_id":User}
+        read_only_fields = {"id"}
 
 
     
 
 class Album(CustomBaseModel):
     id : int =None
-    artist_id : int
     title : str
+    artist_id : int
     release_date : datetime.date = None
     created_at : datetime.datetime = datetime.datetime.now()
     updated_at : datetime.datetime = datetime.datetime.now()
+
+
+    class Meta:
+        foreign_keys = {"artist_id":Artist}
+        read_only_fields = {"id"}
 
 
 class Music(CustomBaseModel):
@@ -58,6 +52,10 @@ class Music(CustomBaseModel):
     genre : GenreEnum
     created_at : datetime.datetime = datetime.datetime.now()
     updated_at : datetime.datetime = datetime.datetime.now()
+
+    class Meta:
+        foreign_keys = {"album_id":Album}
+        read_only_fields = {"id"}
 
 
     

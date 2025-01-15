@@ -1,11 +1,7 @@
 from django.shortcuts import render
 from django.views import View
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.hashers import make_password,check_password
 from base.mixins import LoginRequiredMixin
-from database.operations import execute_insert_query
 from music.models import Artist
-from user.models import User
 # Create your views here.
 
 class IndexView(LoginRequiredMixin,View):
@@ -32,7 +28,6 @@ class IndexView(LoginRequiredMixin,View):
         artist = Artist.get_from_db(id=1)
         # print(artist.user.full_name)
         context = {}
-        context["artist"] = artist
 
         return render(request,"music/index.html",context)
     

@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from base.exceptions import InvalidAttributeError
 from database.operations import execute_db_query, execute_insert_query, execute_select_first_query, execute_select_query
 import datetime
+from pydantic._internal._model_construction import ModelMetaclass
+import importlib
 
 class CRUDMixin:
     @classmethod
@@ -67,11 +69,35 @@ class CRUDMixin:
             sql_query = f'UPDATE {self.get_table_name()} SET {update_fields_query} WHERE id=%s'
             execute_db_query(sql_query,tuple(update_values))
 
+def import_class(full_class_name: str):
+    """
+    Dynamically import a class from a fully qualified name.
+    """
+    module_name, class_name = full_class_name.rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    return getattr(module, class_name)
+
+class ForeignKeyMeta(ModelMetaclass,type):
+    def __new__(cls, name, bases, dct):
+        # Create the new class
+        new_cls = super().__new__(cls, name, bases, dct)
+
+        foreign_keys = getattr(new_cls.Meta, "foreign_keys", {})
+        for foreign_key_field,related_model in foreign_keys.items():
+            # Define a dynamic property for each foreign key
+            def foreign_key_property(self, related_model=related_model, foreign_key_field=foreign_key_field):
+                foreign_key_id = getattr(self, foreign_key_field, None)
+                if foreign_key_id is not None:
+                    if  hasattr(related_model, "get_from_db"):
+                        return related_model.get_from_db(id=foreign_key_id)
+                return None
+            # Add the property to the class
+            setattr(new_cls, related_model.__name__.lower(), property(foreign_key_property))
+
+        return new_cls
 
 
-        
-
-class CustomBaseModel(CRUDMixin,BaseModel):
+class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
 
     class Config:  
         use_enum_values = True
