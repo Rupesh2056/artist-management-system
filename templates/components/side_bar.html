@@ -13,9 +13,9 @@
         {% if request.user.user_type == 'admin' %}
             {%include 'components/menu_item.html' with path="index" url='user_list' title='User' icon="bi bi-box" %}
         {% endif %}
-        {%include 'components/menu_item.html' with path="index" url='index' title='Artist' icon="bi bi-box" %}
-        {%include 'components/menu_item.html' with path="index" url='index' title='Album' icon="bi bi-box" %}
-        {%include 'components/menu_item.html' with path="index" url='index' title='Music' icon="bi bi-box" %}
+        {% comment %} {%include 'components/menu_item.html' with path="artist" url='index' title='Artist' icon="bi bi-box" %} {% endcomment %}
+        {%include 'components/menu_item.html' with path="album" url='album_list' title='Album' icon="bi bi-box" %}
+        {%include 'components/menu_item.html' with path="music" url='music_list' title='Music' icon="bi bi-box" %}
 
 
         {%include 'components/menu_title.html' with title="Music"%}

@@ -1,39 +1,180 @@
 from django.shortcuts import render
 from django.views import View
-from base.mixins import LoginRequiredMixin
-from music.models import Artist
+from base.mixins import HasPermissionMixin, LoginRequiredMixin
+from base.utils import DeleteMixin, PartialTemplateMixin
+from base.views import BaseUpdateView
+from music.forms import AlbumCreateForm, MusicCreateForm
+from music.models import Album, Artist, Music
+from typing import Any
+
+from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from django.views.generic import ListView
+from django.views.generic import CreateView
+
 # Create your views here.
 
 class IndexView(LoginRequiredMixin,View):
     
     def get(self,request,*args,**kwargs):
-
-        # print(request.user.is_authenticated)
-        # password = "password"
-        # hashed_password = make_password(password)
-        # # print(hashed_password)
-        # # print(check_password(password,hashed_password))
-        # create_user_query = 'INSERT INTO "User" (full_name,email,address,phone) VALUES (%s,%s,%s,%s) '
-        # values = ("Rupesh Chaulagain","email","address","phone ")
-        # execute_insert_query(create_user_query,values)
-        # print("done ")
-
-        # u = User(full_name="Rupesh",email="rupesh@asparksys.com",password="abcd")
-        # # print(u)
-        # # u.get_fields()
-        # print(u.get_insert_query())
-        # users = User.filter_from_db(gender="m")
-        # print(users)
-        # Artist.create(first_album_release_year=2000)
-        artist = Artist.get_from_db(id=1)
-        # print(artist.user.full_name)
         context = {}
-
         return render(request,"music/index.html",context)
     
 
 
 
+class AlbumMixin(HasPermissionMixin,PartialTemplateMixin):
+    form_class = AlbumCreateForm
+    model = Album
+    success_url = reverse_lazy("album_list")
+    template_dir="album/"
+    authorized_goups = ["admin","artist"]
+
+    def get(self,request,*args,**kwargs):
+        context = self.get_context_data(**kwargs)   
+        return render(request,self.get_template_names(),context)
+    
+    def get_choices(self):
+        artists = Artist.filter_from_db()
+        choices = []
+        for artist in artists:
+            choices.append((artist.id,artist.user.full_name))
+        return choices
 
 
 
+
+class AlbumListView(AlbumMixin,ListView):
+    template_name = "album/album_list.html"
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context["object_list"] = self.get_queryset()
+        return context
+
+    def get_queryset(self):
+        search = self.request.GET.get("q")
+        filter_args = {}
+        if search:
+            filter_args["title__icontains"] = f"%{search}%"
+
+        return Album.filter_from_db(**filter_args)
+
+class AlbumCreateView(AlbumMixin,CreateView):
+    template_name = "create.html"   
+    
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = {}
+        context["form"] = self.get_form_class()
+        return context
+    
+    def get_form_class(self,**kwargs):
+        return self.form_class(choices=self.get_choices(),**kwargs)
+    
+    
+    def post(self,request,*args,**kwargs):
+        form = self.get_form_class(data=request.POST)
+        if form.is_valid():
+            self.model.create(**form.cleaned_data)
+            return redirect(self.success_url)
+        return render(request,self.get_template_names(),context={"form":form})
+        
+class AlbumUpdateView(AlbumMixin,BaseUpdateView):
+    template_name = "update.html"
+ 
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = {}
+        self.instance = self.model.get_from_db(id=kwargs.get("pk"))
+        context["form"] = self.form_class(initial=self.instance.__dict__,choices=self.get_choices()) 
+        return context
+
+
+    def post(self,request,*args,**kwargs):
+        instance = self.get_object()
+        form = self.form_class(data=request.POST,choices=self.get_choices())
+        if form.is_valid():      
+            instance.update(**form.cleaned_data)
+            return redirect(self.success_url)
+        return render(request,self.get_template_names(),context={"form":form})
+    
+class AlbumDeleteView(AlbumMixin,DeleteMixin,View):
+    ...
+
+
+
+
+class MusicMixin(HasPermissionMixin,PartialTemplateMixin):
+    form_class = MusicCreateForm
+    model = Music
+    success_url = reverse_lazy("music_list")
+    template_dir="music/"
+    authorized_goups = ["admin","artist"]
+
+    # def get(self,request,*args,**kwargs):
+    #     context = self.get_context_data(**kwargs)   
+    #     return render(request,self.get_template_names(),context)
+    
+    def get_choices(self):
+        albums = Album.filter_from_db()
+        choices = []
+        for album in albums:
+            choices.append((album.id,album.title))
+        return choices
+
+class MusicListView(MusicMixin,ListView):
+    template_name = "music/music_list.html"
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context["object_list"] = self.get_queryset()
+        return context
+
+    def get_queryset(self):
+        search = self.request.GET.get("q")
+        filter_args = {}
+        if search:
+            filter_args["title__icontains"] = f"%{search}%"
+
+        return Music.filter_from_db(**filter_args)
+
+class MusicCreateView(MusicMixin,CreateView):
+    template_name = "create.html"   
+    
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = {}
+        context["form"] = self.get_form_class()
+        return context
+    
+    def get_form_class(self,**kwargs):
+        return self.form_class(choices=self.get_choices(),**kwargs)
+    
+    
+    def post(self,request,*args,**kwargs):
+        form = self.get_form_class(data=request.POST)
+        if form.is_valid():
+            self.model.create(**form.cleaned_data)
+            return redirect(self.success_url)
+        return render(request,self.get_template_names(),context={"form":form})
+        
+class MusicUpdateView(MusicMixin,BaseUpdateView):
+    template_name = "update.html"
+ 
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = {}
+        self.instance = self.model.get_from_db(id=kwargs.get("pk"))
+        context["form"] = self.form_class(initial=self.instance.__dict__,choices=self.get_choices()) 
+        return context
+
+
+    def post(self,request,*args,**kwargs):
+        instance = self.get_object()
+        form = self.form_class(data=request.POST,choices=self.get_choices())
+        if form.is_valid():      
+            instance.update(**form.cleaned_data)
+            return redirect(self.success_url)
+        return render(request,self.get_template_names(),context={"form":form})
+    
+class MusicDeleteView(MusicMixin,DeleteMixin,View):
+    ...

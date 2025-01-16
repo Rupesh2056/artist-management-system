@@ -54,6 +54,7 @@ class UserRegistrationView(View):
         if form.is_valid():
             print("form is valid")
             try:
+                form.cleaned_data["user_type"] = "admin"
                 user = User.create(**form.cleaned_data)
             except ValidationError as e:
                 print(str(e))
@@ -90,7 +91,7 @@ class UserLoginView(View):
 
             context = {}
             context["form"] = form
-            return render(request,"user/login.html",context)
+            return render(request,"registration/login.html",context)
                 
 
 
@@ -106,7 +107,6 @@ class UserMixin(HasPermissionMixin,PartialTemplateMixin):
     form_class = UserRegistrationForm
     model = User
     success_url = reverse_lazy("user_list")
-    queryset = User.filter_from_db()
     template_dir="user/"
     authorized_goups = ["admin"]
 

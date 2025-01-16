@@ -16,8 +16,17 @@ Including another URLconf
 """
 from django.urls import path
 
-from music.views import IndexView
+from music.views import AlbumCreateView, AlbumDeleteView, AlbumListView, AlbumUpdateView, IndexView, MusicCreateView, MusicDeleteView, MusicListView, MusicUpdateView
 
 urlpatterns = [
     path('', IndexView.as_view(),name="index"),
+    path('album/', AlbumListView.as_view(),name="album_list"),
+    path('album/create/', AlbumCreateView.as_view(),name="album_create"),
+    path('album/<int:pk>/update/', AlbumUpdateView.as_view(),name="album_update"),
+    path('album/delete/', AlbumDeleteView.as_view(),name="album_delete"),
+
+    path('music/', MusicListView.as_view(),name="music_list"),
+    path('music/create/', MusicCreateView.as_view(),name="music_create"),
+    path('music/<int:pk>/update/', MusicUpdateView.as_view(),name="music_update"),
+    path('music/delete/', MusicDeleteView.as_view(),name="music_delete"),
 ]
