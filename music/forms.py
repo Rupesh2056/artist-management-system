@@ -23,6 +23,21 @@ class AlbumCreateForm(BaseForm,forms.Form):
         if choices:
             self.fields["artist_id"].choices = choices
 
+class ArtistAlbumCreateForm(BaseForm,forms.Form):
+    '''
+    Used when creating by artist user.
+    '''
+    title = forms.CharField()
+    release_date = forms.DateField(
+        widget=forms.DateInput(format="%Y-%m-%d",
+                               attrs={'type': 'date',
+                                    #   'max': str((timezone.now() + timedelta(days=365)).date())
+                                      },),
+        help_text='Select a date',
+        input_formats=["%Y-%m-%d"],
+      
+    )
+
 
 class MusicCreateForm(BaseForm,forms.Form):
     GENRE_CHOICES = (

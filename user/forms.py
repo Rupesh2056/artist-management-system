@@ -21,10 +21,10 @@ class UserForm(BaseForm,forms.Form):
     dob = forms.DateField(
         widget=forms.DateInput(format="%Y-%m-%d",
                                attrs={'type': 'date',
-                                    #   'max': str((timezone.now() + timedelta(days=365)).date())
                                       },),
         help_text='Select a date',
         input_formats=["%Y-%m-%d"],
+        required=False
       
     )
     gender = forms.ChoiceField(choices=GENDER_CHOICES)
@@ -67,12 +67,16 @@ class UserCreationForm(UserRegistrationForm):
         ("artist","Artist"),
     )
     user_type = forms.ChoiceField(choices = USER_TYPE_CHOICES)
+    first_album_release_year = forms.IntegerField(required=False)
+
+
+class ArtistCreateForm(UserRegistrationForm):
+    first_album_release_year = forms.IntegerField(required=False)
+
 
 class UserUpdateForn(UserForm):
     def __init__(self, *args,email=None, **kwargs):
         super().__init__(*args, **kwargs)
-        print("init emaik")
-        print(email)
         self.email=email
         
     def clean_email(self):

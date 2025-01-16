@@ -10,10 +10,12 @@
             <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
               <th class="min-w-50px sorting" tabindex="0" >SN</th>
               <th class="min-w-125px sorting" tabindex="0" >Title</th>
+              <th class="min-w-125px sorting" tabindex="0" >Album</th>
               <th class="min-w-125px sorting" tabindex="0" >Genre</th>
+
+
              
               <th class="min-w-125px sorting" tabindex="0" >Created At</th>
-              <th class="min-w-125px sorting" tabindex="0" >Artist</th>
 
               <th class="text-end min-w-70px sorting_disabled" rowspan="1" colspan="1" aria-label="Actions"
                 style="width: 200px;">Actions</th>
@@ -47,12 +49,14 @@
                      </td>
 
                      <td>
-                      {{object.created_at}}
+                      {{object.album.title}}
                      </td>
 
                      <td>
-                      {{object.updated_at}}
+                      {{object.created_at}}
                      </td>
+
+                     
 
 
                     <td class="text-end ">

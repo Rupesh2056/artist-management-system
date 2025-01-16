@@ -9,10 +9,10 @@
             <!--begin::Table row-->
             <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
               <th class="min-w-50px sorting" tabindex="0" >SN</th>
-              <th class="min-w-125px sorting" tabindex="0" >Album Title</th>
-              <th class="min-w-125px sorting" tabindex="0" >Release Date</th>
-             
-              <th class="min-w-125px sorting" tabindex="0" >Artist</th>
+              <th class="min-w-125px sorting" tabindex="0" >Full Name</th>
+              <th class="min-w-125px sorting" tabindex="0" >Email</th>
+              <th class="min-w-125px sorting" tabindex="0" >First Album Release Year</th>
+              {% comment %} <th class="min-w-125px sorting" tabindex="0" >First Album Released</th> {% endcomment %}
               <th class="min-w-125px sorting" tabindex="0" >Created At</th>
 
               <th class="text-end min-w-70px sorting_disabled" rowspan="1" colspan="1" aria-label="Actions"
@@ -39,22 +39,16 @@
                       hx-target="#body-div"
                        > {% endcomment %}
                         <a>
-                      {{object.title}}
+                      {{object.full_name}}
                       </a>
                      </td>
-                     <td>
-                      {{object.release_date}}
-                     </td>
+                     <td>{{object.email}}</td>
+                     <td>{{object.artist_profile.first_album_release_year}}</td>
+                     
+                     
+                     <td>{{object.created_at}}</td>
 
-                    
-
-                     <td>
-                      {{object.artist.user.full_name}}
-                     </td>
-                     <td>
-                      {{object.created_at}}
-                     </td>
-
+               
 
                       <td class="text-end">
                         <a href="#" class="btn btn-sm btn-light btn-active-light-primary" data-kt-menu-trigger="click"
@@ -78,10 +72,10 @@
                            <!--end::Menu item-->
                            <!--begin::Menu item-->
                            <div class="menu-item px-3">
-                                 {% include 'components/dropdown_action.html' with title="Update" hx_url="album_update"  pk=object.id   %}
+                                 {% include 'components/dropdown_action.html' with title="Update" hx_url="user_update"  pk=object.id   %}
                            </div>
                            <div class="menu-item px-3">
-                              <a onclick="remove({{object.id}},'{% url "album_delete" %}','{{object}}',)" class="menu-link px-3" id="obj"
+                              <a onclick="remove({{object.id}},'{% url "user_delete" %}','{{object}}',)" class="menu-link px-3" id="obj"
                               data-kt-customer-table-filter="delete_row">Delete</a>
                            </div>
                            <!--end::Menu item-->
@@ -89,7 +83,7 @@
                      </td>
               </tr>
               {%empty%}
-              {% include 'components/empty.html' with  title="Album"%}
+              {% include 'components/empty.html' with  title="User"%}
             {% endfor %}
          
           </tbody>
@@ -97,7 +91,7 @@
         </table>
       </div>
     {%if object_list%}
-      {% include 'pagination.html' with hx_url="album_list" %}
+      {% include 'pagination.html' with hx_url="artist_list" %}
     {%endif%}
     </div>
     <!--end::Table-->

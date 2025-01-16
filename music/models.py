@@ -5,6 +5,7 @@ import datetime
 from enum import Enum
 
 from user.models import User
+from typing import Optional
 
 # Create your models here.
 class GenreEnum(str,Enum):
@@ -19,14 +20,14 @@ class GenreEnum(str,Enum):
 class Artist(CustomBaseModel):
     id : int = None
     user_id : int = None
-    first_album_release_year : int  = None
+    first_album_release_year : Optional[int]  = None
     created_at : datetime.datetime = datetime.datetime.now()
     updated_at : datetime.datetime = datetime.datetime.now()
 
 
     class Meta:
         foreign_keys = {"user_id":User}
-        read_only_fields = {"id"}
+        read_only_fields = ["id"]
 
 
     
@@ -42,7 +43,7 @@ class Album(CustomBaseModel):
 
     class Meta:
         foreign_keys = {"artist_id":Artist}
-        read_only_fields = {"id"}
+        read_only_fields = ["id"]
 
 
 class Music(CustomBaseModel):
@@ -55,7 +56,7 @@ class Music(CustomBaseModel):
 
     class Meta:
         foreign_keys = {"album_id":Album}
-        read_only_fields = {"id"}
+        read_only_fields = ["id"]
 
 
     

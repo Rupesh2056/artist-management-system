@@ -1,0 +1,101 @@
+<div id="page-parent-div">
+
+<div class="card p-2">
+
+<div class="card-body p-4 m-4">
+
+  <h1>{% if title %} {{title}} {% else %} Create {% endif %}</h1>
+    <form class="" enctype="multipart/form-data"  hx-post="" hx-replace-url="true" hx-target="#body-div" hx-indicator="#spinner">
+      <div class="row">
+         {% for field in form.visible_fields %}
+
+         <!-- {{field.field.widget.input_type}} -->
+         {% if field.field.widget.input_type == "text" or field.field.widget.input_type == "number" or field.field.widget.input_type == "datetime-local" or field.field.widget.input_type == "url" or field.field.widget.input_type == "email" or field.field.widget.input_type == "date" %}
+         <div class="col-md-6 fv-row fv-plugins-icon-container">
+
+         {% elif field.field.widget.input_type == "textarea" or field.field.widget.input_type == "checkbox" %}
+                <div class="col-md-12 fv-row fv-plugins-icon-container">
+          {% else %}
+            <div id="id_div_{{field.field.label}}">
+          {% endif %}
+            <p class="form-group">
+                  {% if field.field.widget.input_type == "checkbox" %}
+                  <label class="form-check form-switch form-check-custom form-check-solid">
+                        {{field}}
+                      <span class="form-check-label fw-bold text-muted" for="kt_modal_add_customer_billing">
+                        {{field.label}}
+                        {% if field.field.required %}
+                        <span class="text-danger"> *</span>
+                        {% endif %}
+                      </span>
+                    </label>
+                  {% elif field.field.widget.input_type == "radio" %}
+
+                      <div class="form-check form-check-custom form-check-solid me-10">
+												{{field}}
+                        <label class="form-check-label" for="flexRadioChecked">
+                            {{field.label}}
+                            {% if field.field.required %}
+                        <span class="text-danger"> *</span>
+                        {% endif %}
+                        </label>
+                    </div>
+                  {% else %}
+                  <label for="{{field.auto_id}}" id="label_{{field.auto_id}}">
+                    {{field.label}}
+                    {% if field.field.required %}
+                        <span class="text-danger"> *</span>
+                        {% endif %}
+
+                  </label>
+                  {{field}}
+                  <div class="fv-plugins-message-container invalid-feedback"><div data-field="daterangepicker_input"> {{field.errors}} </div></div>
+                  {% endif %}
+                  </p>
+                  </div>
+                    {% endfor %}
+          </div>
+
+
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  </div>
+</div>
+{% if not is_artist %}
+  <script>
+    $(document).ready(function() {
+      console.log($("#id_user_type").val())
+    $("#id_first_album_release_year").hide();
+    $("#label_id_first_album_release_year").hide();
+    $("#id_user_type").on("change", function(e){
+      console.log("changed")
+
+
+        var user_type = $(this).val()
+        if (user_type == "artist")
+        {
+          $("#label_id_first_album_release_year").show();
+
+          $("#id_first_album_release_year").show();
+
+        } 
+        else {
+          $("#label_id_first_album_release_year").hide();
+
+          $("#id_first_album_release_year").hide();
+        }
+      
+    })
+    });
+  </script>
+{% endif %}
+
+</div>
+
+
+
+
+

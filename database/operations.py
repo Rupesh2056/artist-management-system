@@ -28,6 +28,7 @@ def execute_insert_query(query,values) -> None:
         '''
         with connection.cursor() as cursor:
                 cursor.execute(query,values)
+                return cursor.fetchone()[0] #id of the inserted row             
 
 
 def execute_create_table_query(query) -> None:

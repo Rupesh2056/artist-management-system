@@ -1,6 +1,8 @@
 import datetime
 from enum import Enum
-from database.base import CustomBaseModel
+from database.base import CustomBaseModel, import_class
+from typing import Optional
+
 # Create your models here.
 class GenderEnum(str,Enum):
     Male = "m"
@@ -22,7 +24,7 @@ class User(CustomBaseModel):
     email : str
     address : str = None
     phone : str = None
-    dob : datetime.date = None  
+    dob : Optional[datetime.date] = None 
     gender : GenderEnum = None
     user_type : UserTypeEnum = UserTypeEnum.Artist
     password : str
@@ -34,6 +36,12 @@ class User(CustomBaseModel):
     
     class Meta:
         read_only_fields = ["id"]
+
+    
+    @property
+    def artist_profile(self):
+        if self.user_type == "artist":
+            return import_class("music.models.Artist").get_from_db(user_id=self.id)
    
 
     def __str__(self):

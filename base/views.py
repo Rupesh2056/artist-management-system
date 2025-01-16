@@ -13,7 +13,7 @@ class BaseUpdateView(View):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = {}
-        self.instance = self.model.get_from_db(id=kwargs.get("pk"))
+        self.instance = self.get_object()
         context["form"] = self.form_class(initial=self.instance.__dict__) 
         return context
     

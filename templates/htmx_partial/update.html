@@ -2,7 +2,7 @@
 
 <div class="card p-2">
 
-<form class="p-4" enctype="multipart/form-data" hx-post="" hx-replace-url="true" hx-indicator="#spinner">
+<form class="p-4" enctype="multipart/form-data" hx-post="" hx-replace-url="true" >
 <div class="row">
 
      {% for field in form.visible_fields %}
@@ -45,7 +45,6 @@
 
     </div>
 
-    {% comment %} <input type="submit" value="Submit" class="btn btn-primary mt-2" id="create-btn"></input> {% endcomment %}
     <button class="btn btn-primary" type="submit">Submit</button>
   </form>
 

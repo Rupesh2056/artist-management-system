@@ -11,9 +11,7 @@ class CRUDMixin:
         obj = cls(**kwargs)
         query  = cls.get_insert_query()
         values = obj.get_values(exclude=["id"])
-        print(query)
-        print(values)
-        execute_insert_query(query,values)
+        obj.id=execute_insert_query(query,values)
         return obj
     
     @classmethod
@@ -146,11 +144,11 @@ class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
     def get_insert_query(self) -> str:
         '''
         Prepares and Returns a psycopg2 query to insert record into a table.
-        Eg: "Insert INTO user_user (full_name,email,...) VALUES (%s,%s,...)"
+        Eg: "Insert INTO user_user (full_name,email,...) VALUES (%s,%s,...) "
         '''
         fields = self.get_insert_fields()
         values = ("%s,"*len(fields))[:-1]
-        return f'INSERT INTO {self.get_table_name()} ({",".join(fields)}) VALUES ({values})'
+        return f'INSERT INTO {self.get_table_name()} ({",".join(fields)}) VALUES ({values}) RETURNING id'
     
     @classmethod
     def initialize(cls,data) -> object:

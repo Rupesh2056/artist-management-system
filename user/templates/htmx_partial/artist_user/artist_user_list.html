@@ -3,12 +3,12 @@
 
 <div class="card">
     {% comment %} {% include 'htmx_partial/components/search_filter.html' with object_title="Jobs" search_title="Search Job" hx_search_url="job_list" create_url="job_create" create_button="New Job" %} {% endcomment %}
-    <form id="search-form" style="z-index:12;" hx-get="{% url 'music_list' %}" 
+    <form id="search-form" style="z-index:12;" hx-get="{% url 'user_list' %}" 
     hx-vals='{"search":"true"}'
     hx-target = "#table-list" >
 
     <div class="d-flex justify-content-between">
-      <h3 class="m-5">Music</h3>
+      <h3 class="m-5">Artists</h3>
       {% comment %} {% with button_link="Export,job_export,Download,job_download"|to_list %}
         {% with button_list=button_link %}
           {% include 'components/export_download_toolbar.html' with search_title="Search Admin" %}
@@ -35,7 +35,7 @@
                  <!--end::Svg Icon-->
                     <input 
                        type="text"  
-                       hx-get="{% url 'music_list' %}"
+                       hx-get="{% url 'artist_list' %}"
                        hx-vals='{"search":"true"}'
                        hx-target = "#table-list"   
                        {% if spinner %}
@@ -43,12 +43,12 @@
                        {% endif %}
                        hx-trigger="keyup changed delay:300ms"
                        data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" name="q"
-                       placeholder="Search Music" value="{{request.GET.q}}"
+                       placeholder="Search Artist" value="{{request.GET.q}}"
                     >
                  
               </div>
               <!--end::Search-->
-              {% comment %} <div class="ms-1">
+              <div class="ms-1">
                 <label>Date From</label>
                 <input class="form-control" onChange="submitForm()" name="date_from" type="date" value="{{request.GET.date_from}}">
 
@@ -57,7 +57,7 @@
                 <label>Date To</label>
                 <input class="form-control" name="date_to" onChange="submitForm()" type="date" value="{{request.GET.date_to}}">
 
-              </div> {% endcomment %}
+              </div>
 
               
 
@@ -65,7 +65,7 @@
                 <a  
                 {% comment %} hx-get="{% url 'candidate_list' %}" 
                 hx-push-url = "true" {% endcomment %}
-                href="{% url 'music_list' %}"
+                href="{% url 'artist_list' %}"
                 class="btn btn-danger"
                 >
                 Clear
@@ -85,11 +85,11 @@
    
                <!--begin::Add customer-->
                <a 
-               hx-get="{% url 'music_create' %}"
+               hx-get="{% url 'artist_create' %}"
                hx-target="#body-div"
                hx-push-url="true"
                class="btn btn-primary mx-5"
-               id="create-job-btn">Create Music</a>
+               id="create-job-btn">Create Artist</a>
                <!--end::Add customer-->
 
       </div>
@@ -101,7 +101,7 @@
       
     
     <div id="table-list">
-        {% include 'htmx_partial/music/table_content.html' %}
+        {% include 'htmx_partial/artist_user/table_content.html' %}
      </div>
 
     

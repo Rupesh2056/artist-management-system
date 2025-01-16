@@ -12,14 +12,16 @@
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
 
-      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
       
-      <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
-      integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"     
-      ></script>
+   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+   
+   <script
+   src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
+   integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
+   crossorigin="anonymous"
+   referrerpolicy="no-referrer"
+   
+   ></script>
       <link rel="shortcut icon" href="#" /> {%include 'assets/header_css.html'%}
       <script src="{% static 'js/htmx.min.js' %}" ></script>
       {% block header %} {% endblock %}
@@ -210,34 +212,58 @@
       <!--begin::Javascript-->
       {% block footer_js %} {% endblock %} {%include 'assets/footer_js.html'%}
       {% block script %} {% endblock %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
       <script>
+         $(document).on('click',".menu-link.side-bar",function()
+               {
+
+                  $(".menu-link.side-bar").removeClass("active"); 
+                  $(this).addClass("active"); 
+               }
+               );
          {% if messages %}
-          {% for message in messages %}
-              {%if "extra" in message.tags %}
-                toastr.success('{{message}}', 'Success', {timeOut: 5000})
-              {% else %}
-                    function successToast() {
-                    toastr.options.progressBar = true;
-                    toastr.options.closeButton = true;
-                    {% if message.tags == 'success' %}
-                    toastr.success('{{message}}', 'Success', {timeOut: 5000})
-                    {% elif message.tags == "error" %}
-                    toastr.error('{{message}}', 'Error', {timeOut: 5000})
-                    {% else %}
-                    toastr.warning('{{message}}', 'Warning', {timeOut: 5000})
-                    {% endif %}
-                  }
-                  successToast()
-              {%endif%}
+               {% for message in messages %}
+               let bgColor = "info" 
+               let message = "{{message.message}}"
+               let tag = "{{message.tags}}"
+               console.log(message)
+               console.log(tag)
+               if (tag == "success")
+               {
+                 bgColor = "green"
+           
+               }
+               else if (tag == "error")
+                 {
+                   bgColor = "red"
+             
+                 }
 
-          {% endfor %}
+               console.log(bgColor)
+               Toastify({
+                 text: message,
+                 duration: 2000,
+                 close: true,
+                 gravity: "top", // `top` or `bottom`
+                 position: "right", // `left`, `center` or `right`
+                 stopOnFocus: true, // Prevents dismissing of toast on hover
+                 style: {
+                   background: bgColor,
+                 },
+                 onClick: function(){} // Callback after click
+               }).showToast();
+               {% endfor %}
+            {% endif %}
 
-        {% endif %}
-
+   
 
         
                
       </script>
+      {% include "toasts.html" %}
+   
+      <script src="{% static 'js/toasts.js' %}"></script>
 
    </body>
    <!--end::Body-->
