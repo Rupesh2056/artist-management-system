@@ -179,7 +179,7 @@ class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
             actual_field_name = key.split('__')[0]
             if  actual_field_name in fields:
                 if "__" in key:
-                    queries.append(f"Lower({actual_field_name}) LIKE %s ")
+                    queries.append(f" Lower({actual_field_name}) LIKE %s ")
                     values.append(f"%{val}%")
                 else:
                     queries.append(f"{key} = %s ")
