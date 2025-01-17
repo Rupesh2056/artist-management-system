@@ -17,7 +17,7 @@
       <div class="ms-1 mt-6">
            
          <a href="{% url "artist_export" %}?{% for key,val in request.GET.items %}&{{ key }}={{ val }}{% endfor %}" class="btn btn-light-primary me-3">Export</a>
-
+         <a href="{% url 'artist_import' %}" class="btn btn-light-primary me-3">Import</a>
        </div>
       </div>
      

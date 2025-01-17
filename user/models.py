@@ -25,10 +25,10 @@ class User(CustomBaseModel):
     id : int = None
     full_name : str
     email : str
-    address : str = None
-    phone : str = None
+    address : Optional[str] = None
+    phone : Optional[str] = None
     dob : Optional[datetime.date] = None 
-    gender : GenderEnum = None
+    gender : Optional[GenderEnum] = None
     user_type : UserTypeEnum = UserTypeEnum.Artist
     password : str
     created_at : datetime.datetime = datetime.datetime.now()

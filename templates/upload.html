@@ -1,0 +1,69 @@
+{%extends 'base.html'%} {%load static%} {%block title%} Create {%endblock%}
+{%block content %}
+<div id="page-parent-div">
+
+  <div class="card p-2">
+  
+  <div class="card-body p-4 m-4">
+  
+    <h1>{% if title %} {{title}} {% else %} Upload Artist {% endif %}</h1>
+      <form class="" enctype="multipart/form-data"  action="" method="POST">
+        <div class="row">
+           {% for field in form.visible_fields %}
+              <div id="id_div_{{field.field.label}}">
+              <p class="form-group">
+                    
+                   
+                    <label for="{{field.auto_id}}">
+                      {{field.label}}
+                      {% if field.field.required %}
+                          <span class="text-danger"> *</span>
+                          {% endif %}
+  
+                    </label>
+                    {{field}}
+                    <div class="fv-plugins-message-container invalid-feedback"><div data-field="daterangepicker_input"> {{field.errors}} </div></div>
+                    </p>
+                    </div>
+                      {% endfor %}
+                  </div>
+  
+      {% csrf_token %}
+  
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  
+    </div>
+  </div>
+  
+  </div>
+
+  <p>
+    {% if message %}
+    {{message}}
+    {% endif %}
+
+    {% if upload_count %}
+    Upload Count: {{upload_count}}
+    {% endif %}
+
+    {% if failure_count %}
+    Failure Count: {{failure_count}}
+    {% endif %}
+
+    {% if error %}
+    Error*{{error}}
+    {% endif %}
+
+    {% if errors %}
+    Errors: 
+    {% for er in errors %}
+    <p>{{er.code}}:{{er.error}}</p>
+    {% endfor %}
+    {% endif %}
+  </p>
+  
+  
+  
+  
+{% endblock %}
