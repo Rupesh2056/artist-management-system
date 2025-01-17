@@ -1,38 +1,113 @@
-{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
 
-{% block content %}
-<div class="card text-bg-light mb-3" >
-    {% comment %} <div class="card-header">Register</div> {% endcomment %}
-    <div class="card-body">
-      <h5 class="card-title">Register</h5>
-      <form action="" method="POST">
-        {% csrf_token %}
-        {% comment %} {{form.as_p}} {% endcomment %}
-        {% for field in form.visible_fields %}
-        <div class="col-md-6 fv-row fv-plugins-icon-container">
-            <p class="form-group">
-                <label for="{{field.auto_id}}">
-                    {{field.label}}
-                    {% if field.field.required %}
-                        <span class="text-danger"> *</span>
-                        {% endif %}
+<html lang="en">
+<head>
+	<title>CRM Login</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
 
-                  </label>
-                  {{field}}
 
-                  {% for error in field.errors %}
-                  <span class="text-danger"> {{ error }}</span>
-                    {% endfor %}
-                    {% comment %} <p class="text-danger" style="color:red !important;">  {{field.errors}}</p> {% endcomment %}
-                
 
-            </p>
-        </div>
-        {% endfor %}
-     
-        <button type="submit" class="btn btn-primary btn-sm">Register</button>
-    </form>
-    </div>
-  </div>
+	<link rel="shortcut icon" href="#" />
+	<!--begin::Fonts-->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+	<!--end::Fonts-->
+	<!--begin::Page Vendor Stylesheets(used by this page)-->
 
-{% endblock %}
+	<!--end::Page Vendor Stylesheets-->
+	<!--begin::Global Stylesheets Bundle(used by all pages)-->
+	<link href="{% static 'plugins/global/plugins.bundle.css' %} " rel="stylesheet" type="text/css" />
+	<link href="{% static 'css/style.bundle.css' %} " rel="stylesheet" type="text/css" />
+	<!--end::Global Stylesheets Bundle-->
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+
+<body id="kt_body" class="bg-body">
+	<!--begin::Main-->
+	<!--begin::Root-->
+	<div class="d-flex flex-column flex-root">
+		<!--begin::Authentication - Sign-in -->
+		<div class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed"
+			style="background-image: url(static/assets/media/illustrations/sketchy-1/14.png)">
+			<!--begin::Content-->
+			<div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+				<!--begin::Logo-->
+				{% comment %} <a href="" class="mb-12">
+					<img alt="Logo" src="{% static 'assets/img/home/logo.png' %}" style="width:138px;" class="h-40px"/>
+				</a> {% endcomment %}
+				<!--end::Logo-->
+				<!--begin::Wrapper-->
+				<div class="w-lg-700px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
+					<!--begin::Form-->
+					<div class="card text-bg-light mb-3" >
+                        {% comment %} <div class="card-header">Register</div> {% endcomment %}
+                        <div class="card-body">
+                          <h5 class="card-title">Register</h5>
+                          <form action="" method="POST">
+                            {% csrf_token %}
+                            {% comment %} {{form.as_p}} {% endcomment %}
+                            {% for field in form.visible_fields %}
+                            <div class="col-md-12 fv-row fv-plugins-icon-container">
+                                <p class="form-group">
+                                    <label for="{{field.auto_id}}">
+                                        {{field.label}}
+                                        {% if field.field.required %}
+                                            <span class="text-danger"> *</span>
+                                            {% endif %}
+                    
+                                      </label>
+                                      {{field}}
+                    
+                                      {% for error in field.errors %}
+                                      <span class="text-danger"> {{ error }}</span>
+                                        {% endfor %}
+                                        {% comment %} <p class="text-danger" style="color:red !important;">  {{field.errors}}</p> {% endcomment %}
+                                    
+                    
+                                </p>
+                            </div>
+                            {% endfor %}
+                         
+                            <button type="submit" class="btn btn-primary btn-sm">Register</button>
+                        </form>
+                        </div>
+                      </div>
+				</div>
+				<!--end::Wrapper-->
+			</div>
+			<!--end::Content-->
+			<!--begin::Footer-->
+			<div class="d-flex flex-center flex-column-auto p-10">
+
+
+
+
+				<!--begin::Links-->
+				<div class="d-flex align-items-center fw-bold fs-6">
+					<a   class="text-muted text-hover-primary px-2">&copy;
+						Rupesh Chaulagain</a>
+
+				</div>
+				<!--end::Links-->
+			</div>
+			<!--end::Footer-->
+		</div>
+		<!--end::Authentication - Sign-in-->
+	</div>
+	<!--end::Root-->
+	<!--end::Main-->
+	<!--begin::Javascript-->
+	<script>var hostUrl = "assets/";</script>
+	<!--begin::Global Javascript Bundle(used by all pages)-->
+	<script src="{% static 'plugins/global/plugins.bundle.js' %}"></script>
+	<script src="{% static 'js/scripts.bundle.js' %}"></script>
+
+	
+</body>
+<!--end::Body-->
+
+</html>

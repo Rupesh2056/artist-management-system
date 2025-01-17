@@ -1,0 +1,114 @@
+
+<div id="page-parent-div">
+
+<div class="card">
+    {% comment %} {% include 'htmx_partial/components/search_filter.html' with object_title="Jobs" search_title="Search Job" hx_search_url="job_list" create_url="job_create" create_button="New Job" %} {% endcomment %}
+    <form id="search-form" style="z-index:12;" hx-get="{% url 'music_list' %}" 
+    hx-vals='{"search":"true"}'
+    hx-target = "#table-list" >
+
+    <div class="d-flex justify-content-between">
+      <h3 class="m-5">Music</h3>
+      {% comment %} {% with button_link="Export,job_export,Download,job_download"|to_list %}
+        {% with button_list=button_link %}
+          {% include 'components/export_download_toolbar.html' with search_title="Search Admin" %}
+        {% endwith %}
+      {% endwith %} {% endcomment %}
+      </div>
+     
+        <!--begin::Card header-->
+        <div class="card-header border-0 ">
+           <!--begin::Card title-->
+           <div class="card-title">
+              <!--begin::Search-->
+              <div class="d-flex align-items-center position-relative my-1">
+                 <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                 <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                       <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
+                          transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                       <path
+                          d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                          fill="black"></path>
+                    </svg>
+                 </span>
+                 <!--end::Svg Icon-->
+                    <input 
+                       type="text"  
+                       hx-get="{% url 'music_list' %}"
+                       hx-vals='{"search":"true"}'
+                       hx-target = "#table-list"   
+                       {% if spinner %}
+                       hx-indicator="#table-spinner"
+                       {% endif %}
+                       hx-trigger="keyup changed delay:300ms"
+                       data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" name="q"
+                       placeholder="Search Music" value="{{request.GET.q}}"
+                    >
+                 
+              </div>
+              <!--end::Search-->
+              {% comment %} <div class="ms-1">
+                <label>Date From</label>
+                <input class="form-control" onChange="submitForm()" name="date_from" type="date" value="{{request.GET.date_from}}">
+
+              </div>
+              <div class="ms-1">
+                <label>Date To</label>
+                <input class="form-control" name="date_to" onChange="submitForm()" type="date" value="{{request.GET.date_to}}">
+
+              </div> {% endcomment %}
+
+              
+              <div class="ms-1">
+                <a  
+                {% comment %} hx-get="{% url 'candidate_list' %}" 
+                hx-push-url = "true" {% endcomment %}
+                href="{% url 'music_list' %}"
+                class="btn btn-danger"
+                >
+                Clear
+                </a>
+              </div>
+              
+
+           </div>
+           <!--begin::Card title-->
+           
+        </div>
+     </form>
+     <!--begin::Card toolbar-->
+     {% if request.user.user_type in authorized_groups %}
+
+     <div class="card-toolbar">
+      <!--begin::Toolbar-->
+      <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+        
+
+               <!--begin::Add customer-->
+               <a 
+               hx-get="{% url 'music_create' %}"
+               hx-target="#body-div"
+               hx-push-url="true"
+               class="btn btn-primary mx-5"
+               id="create-job-btn">Create Music</a>
+               <!--end::Add customer-->
+
+      </div>
+      <!--end::Toolbar-->
+     
+   </div>
+   <!--end::Card toolbar-->
+   {% endif %}
+
+      
+    
+    <div id="table-list">
+        {% include 'htmx_partial/music/table_content.html' %}
+     </div>
+
+    
+</div>
+</div>
+
+

@@ -1,7 +1,6 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from database.operations import execute_create_table_query,execute_create_enum_query
-import psycopg2
 
 
 class Command(BaseCommand):
@@ -47,7 +46,8 @@ class Command(BaseCommand):
         create_artist_table_query = '''
                 CREATE TABLE IF NOT EXISTS music_artist (
                     id SERIAL PRIMARY KEY,
-                    user_id int REFERENCES user_user(id),
+                    user_id INT UNIQUE  REFERENCES user_user(id) ON DELETE CASCADE,
+                    artist_manager_id INT REFERENCES user_user(id) ON DELETE CASCADE,
                     first_album_release_year int,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -59,7 +59,7 @@ class Command(BaseCommand):
                 CREATE TABLE IF NOT EXISTS music_album (
                     id SERIAL PRIMARY KEY,
                     title VARCHAR(225) NOT NULL , 
-                    artist_id int REFERENCES music_artist(id),
+                    artist_id int REFERENCES music_artist(id) ON DELETE CASCADE,
                     release_date DATE,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -70,7 +70,7 @@ class Command(BaseCommand):
         create_music_table_query = '''
                 CREATE TABLE IF NOT EXISTS music_music (
                     id SERIAL PRIMARY KEY,
-                    album_id int REFERENCES music_album(id),
+                    album_id int REFERENCES music_album(id) ON DELETE CASCADE,
                     title VARCHAR(225) NOT NULL , 
                     genre genre_enum,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 

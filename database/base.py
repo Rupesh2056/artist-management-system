@@ -11,9 +11,7 @@ class CRUDMixin:
         obj = cls(**kwargs)
         query  = cls.get_insert_query()
         values = obj.get_values(exclude=["id"])
-        print(query)
-        print(values)
-        execute_insert_query(query,values)
+        obj.id=execute_insert_query(query,values)
         return obj
     
     @classmethod
@@ -146,11 +144,11 @@ class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
     def get_insert_query(self) -> str:
         '''
         Prepares and Returns a psycopg2 query to insert record into a table.
-        Eg: "Insert INTO user_user (full_name,email,...) VALUES (%s,%s,...)"
+        Eg: "Insert INTO user_user (full_name,email,...) VALUES (%s,%s,...) "
         '''
         fields = self.get_insert_fields()
         values = ("%s,"*len(fields))[:-1]
-        return f'INSERT INTO {self.get_table_name()} ({",".join(fields)}) VALUES ({values})'
+        return f'INSERT INTO {self.get_table_name()} ({",".join(fields)}) VALUES ({values}) RETURNING id'
     
     @classmethod
     def initialize(cls,data) -> object:
@@ -178,9 +176,14 @@ class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
         queries = []
         values = []
         for key,val in kwargs.items():
-            if key in fields:
-                queries.append(f"{key} = %s ")
-                values.append(val)
+            actual_field_name = key.split('__')[0]
+            if  actual_field_name in fields:
+                if "__" in key:
+                    queries.append(f" Lower({actual_field_name}) LIKE %s ")
+                    values.append(f"%{val}%")
+                else:
+                    queries.append(f"{key} = %s ")
+                    values.append(val)
             else:
                 raise InvalidAttributeError(key,cls)
         sql_query = f'SELECT * FROM {cls.get_table_name()} '        
@@ -195,6 +198,7 @@ class CustomBaseModel(CRUDMixin,BaseModel,metaclass=ForeignKeyMeta):
                 model = cls.initialize(row)
                 qs.append(model)
             return qs
+        return []  # for pagination. might have to change logic on other views accepting None
         
     
     @classmethod

@@ -1,0 +1,16 @@
+<div class="menu-item">
+    <a class="menu-link side-bar
+    {%if path in request.path%} active {%endif%}" 
+    hx-get={%  url url  %}
+    hx-target="#body-div"
+    hx-push-url="true"
+    {% if spinner %}
+        hx-indicator="#spinner"
+    {% endif %}
+    >
+        <span class="menu-icon">
+            <i class="{{icon}} fs-3"></i>
+        </span>
+        <span class="menu-title"> {{title}}</span>
+    </a>
+</div>

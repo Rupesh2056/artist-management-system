@@ -1,94 +1,130 @@
 from django.shortcuts import render
 from django.views import View
 
-from database.operations import  execute_insert_query
-from user.db_utils import authenticate
-from user.forms import UserLoginForm, UserRegistrationForm
+from base.mixins import HasPermissionMixin
+from base.utils import DeleteMixin, PartialTemplateMixin
+from base.views import BaseUpdateView
+from music.models import Artist
+from user.forms import ArtistCreateForm, UserCreationForm, UserRegistrationForm, UserUpdateForm
 from django.shortcuts import redirect
 
 from user.models import User
-from django.contrib.auth.views import LoginView
-from pydantic import ValidationError
+from django.urls import reverse_lazy
+from typing import Any  
+from django.views.generic import ListView
+from django.contrib import messages
+
 # Create your views here.
 
-class UserRegistrationView_(View):
+
+class UserMixin(HasPermissionMixin,PartialTemplateMixin):
     form_class = UserRegistrationForm
+    model = User
+    success_url = reverse_lazy("user_list")
+    template_dir="user/"
+    authorized_groups = ["admin"]
+
+class UserListView(UserMixin,ListView):
+    template_name = "user/user_list.html"
+    paginate_by = 10
+
+    def get_queryset(self):
+        search = self.request.GET.get("q")
+        filter_args = {}
+        if search:
+            filter_args["full_name__icontains"] = f"%{search}%"
+
+        return User.filter_from_db(**filter_args)
+
+class UserCreateView(UserMixin,View):
+    form_class = UserCreationForm
+    template_name = "user/create.html"
+
     def get(self,request,*args,**kwargs):
-        context = {}
-        context["form"] = UserRegistrationForm()
-        return render(request,"user/register.html",context)
+        context = self.get_context_data(**kwargs)   
+        return render(request,self.get_template_names(),context)
+    
     
     def post(self,request,*args,**kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            print("form is valid")
-            userdata = {}
-            full_name = form.cleaned_data["full_name"]
-            email = form.cleaned_data.get("email")
-            address = form.cleaned_data.get("address")
-            phone = form.cleaned_data.get("phone")
-            gender = form.cleaned_data.get("gender")
-            query  = 'INSERT INTO "User" (full_name,email,address,phone,gender) VALUES (%s,%s,%s,%s,%s) '
-            values = (full_name,email,address,phone,gender)
-            execute_insert_query(query,values)
-            return redirect("/")
+            user = self.model.create(**form.cleaned_data)
+
+            if user.user_type == "artist":
+                Artist.create(user_id=user.id,first_album_release_year=form.cleaned_data.get("first_album_release_year"))
+            messages.success(request,"User Created.")
+            return redirect(self.success_url)
+        return render(request,self.get_template_names(),context={"form":form})
+    
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = {}
+        context["form"] = self.form_class()
+        return context
+        
+class UserUpdateView(UserMixin,BaseUpdateView):
+    form_class = UserUpdateForm
+    template_name = "update.html"
+    authorized_groups = ["admin","artist_manager"]
+
+    def post(self,request,*args,**kwargs):
+        instance = self.get_object()
+        form = self.form_class(data=request.POST,email=instance.email)
+        if form.is_valid():      
+            instance.update(**form.cleaned_data)
+            messages.success(request,"User Updated.")
+            return redirect(self.success_url)
+        return render(request,self.get_template_names(),context={"form":form})
+    
+class UserDeleteView(UserMixin,DeleteMixin,View):
+    authorized_groups = ["admin","artist_manager"]
+
+
+
+# Artist
+class ArtistListView(UserMixin,ListView):
+    template_name = "artist_user/artist_user_list.html"
+    template_dir="artist_user/"
+    success_url = "artist_list"
+    paginate_by = 10
+    authorized_groups = ["admin","artist_manager"]
+
+    def get_queryset(self):
+        search = self.request.GET.get("q")
+        filter_args = {"user_type":"artist"}
+        if search:
+            filter_args["full_name__icontains"] = f"%{search}%"
+        
+        if self.request.user.user_type == "artist_manager":
+            return User.manager_filter(manager_user_id=self.request.user.id,**filter_args)
         
 
-class UserRegistrationView(View):
-    form_class = UserRegistrationForm
-    def get(self,request,*args,**kwargs):
-        context = {}
-        context["form"] = UserRegistrationForm()
-        return render(request,"user/register.html",context)
+        return User.filter_from_db(**filter_args)
     
-    def post(self,request,*args,**kwargs):
+
+class ArtistUserCreateView(UserCreateView):
+    form_class = ArtistCreateForm
+    success_url = reverse_lazy("artist_list")
+    authorized_groups = ["admin","artist_manager"]
+    
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = {}
+        context["form"] = self.form_class()
+        context["is_artist"] = True
+        return context
+    
+    def post(self,request,*args,**kwargs): # use request url on usercreate and remove this
         form = self.form_class(request.POST)
-        print(request.POST)
         if form.is_valid():
-            print("form is valid")
-            try:
-                user = User.create(**form.cleaned_data)
-            except ValidationError as e:
-                print(str(e))
-            return redirect("/")
-        else:
-            context = {}
-            context["form"] =form
-            return render(request,"user/register.html",context)
-        
-class UserLoginView(View):
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.request.user:
-            return redirect("index")
-        return super().dispatch(request, *args, **kwargs)
-
-    def get(self,request,*args,**kwargs):
-        context = {}
-        context["form"] = UserLoginForm()
-        return render(request,"user/login.html",context)
-    
-    def post(self,request,*args,**kwargs):
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password"]
-            user = authenticate(email,password)
-            if user:
-                request.session["user_email"] = user.email
-                return redirect("index")
-                
+            form.cleaned_data["user_type"] = "artist"
+            user = self.model.create(**form.cleaned_data)
+            if request.user.user_type == "artist_manager":
+                artist_manager_id = self.request.user.id
             else:
-                print("not authenticated...")
+                artist_manager_id = None
+            Artist.create(user_id=user.id,
+                          artist_manager_id = artist_manager_id,
+                          first_album_release_year=form.cleaned_data.get("first_album_release_year"))
+            messages.success(request,"Artist Created.")
+            return redirect(self.success_url)
+        return render(request,self.get_template_names(),context={"form":form})
 
-            context = {}
-            context["form"] = form
-            return render(request,"user/login.html",context)
-                
-
-
-class UserLogoutView(View):
-    def get(self,request,*args,**kwargs):
-        if 'user_email' in request.session:
-            del request.session['user_email']
-        return redirect("user_login")

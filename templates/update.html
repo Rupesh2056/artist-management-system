@@ -1,0 +1,5 @@
+{%extends 'base.html'%} {%load static%} {%block title%} Update {%endblock%}
+{%block content %}
+{% include 'components/title_bar.html' with title="Update" back="true" %}
+    {% include 'htmx_partial/update.html' %}
+{% endblock %}
