@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from base.mixins import HasPermissionMixin, LoginRequiredMixin
+from base.mixins import HasPermissionMixin, LoginRequiredMixin, get_redirected
 from base.utils import DeleteMixin, PartialTemplateMixin
 from base.views import BaseUpdateView
 from music.forms import AlbumCreateForm, ArtistAlbumCreateForm, MusicCreateForm
@@ -12,11 +12,23 @@ from django.shortcuts import redirect
 from django.views.generic import ListView
 from django.views.generic import CreateView
 from django.contrib import messages
+from django.http import Http404
+
 # Create your views here.
 
 class IndexView(HasPermissionMixin,PartialTemplateMixin,View):
     template_name = "music/index.html"
-    authorized_goups = ["admin"]
+    authorized_groups = ["admin"]
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user:
+            return redirect("user_login")
+        
+        if request.user.user_type == "admin":
+            return super().dispatch(request,*args,**kwargs)
+        else:
+            return get_redirected(request.user)
+    
     
     def get(self,request,*args,**kwargs):
         context = {}
@@ -31,7 +43,7 @@ class AlbumMixin(HasPermissionMixin,PartialTemplateMixin):
     model = Album
     success_url = reverse_lazy("album_list")
     template_dir="album/"
-    authorized_goups = ["admin","artist"]
+    authorized_groups = ["admin","artist"]
 
     def get(self,request,*args,**kwargs):
         context = self.get_context_data(**kwargs)   
@@ -48,7 +60,7 @@ class AlbumMixin(HasPermissionMixin,PartialTemplateMixin):
     def get_object(self):
         obj =  self.model.get_from_db(id=self.kwargs.get("pk"))
         if self.request.user.user_type == "artist" and  obj.artist_id != self.request.user.artist_profile.id:
-            raise Http404("not dound")
+            raise Http404("not found")
         return obj
     
     def get_form_class(self,**kwargs):
@@ -62,19 +74,33 @@ class AlbumMixin(HasPermissionMixin,PartialTemplateMixin):
 class AlbumListView(AlbumMixin,ListView):
     template_name = "album/album_list.html"
     paginate_by = 10
+    authorized_groups = ["admin","artist_manager","artist"]
 
     def get_context_data(self, **kwargs):
         context = {}
         context["object_list"] = self.get_queryset()
+        context["authorized_groups"] = ["admin","artist"]
         return context
 
     def get_queryset(self):
         search = self.request.GET.get("q")
+        artist_id = self.request.GET.get("artist",None)
+        
+
         filter_args = {}
+        
         if self.request.user.user_type == "artist":
             filter_args["artist_id"] = self.request.user.artist_profile.id
+
+        elif artist_id:
+            filter_args["artist_id"] = int(artist_id)
+
+
         if search:
             filter_args["title__icontains"] = f"%{search}%"
+
+        if self.request.user.user_type == "artist_manager":
+            return Album.manager_filter(manager_user_id=self.request.user.id,**filter_args)
 
         return Album.filter_from_db(**filter_args)
 
@@ -85,9 +111,7 @@ class AlbumCreateView(AlbumMixin,CreateView):
         context = {}
         context["form"] = self.get_form_class()
         return context
-    
-    
-    
+     
     
     def post(self,request,*args,**kwargs):
         form = self.get_form_class(data=request.POST)
@@ -99,7 +123,6 @@ class AlbumCreateView(AlbumMixin,CreateView):
             return redirect(self.success_url)
         return render(request,self.get_template_names(),context={"form":form})
         
-from django.http import Http404
 class AlbumUpdateView(AlbumMixin,BaseUpdateView):
     template_name = "update.html"
     
@@ -136,13 +159,16 @@ class MusicMixin(HasPermissionMixin,PartialTemplateMixin):
     model = Music
     success_url = reverse_lazy("music_list")
     template_dir="music/"
-    authorized_goups = ["admin","artist"]
+    authorized_groups = ["admin","artist"]
 
 
     
     def get_choices(self):
-        albums = Album.filter_from_db()
-        choices = []
+        if self.request.user.user_type == "artist":
+            albums = Album.filter_from_db(artist_id=self.request.user.artist_profile.id)
+        else:
+            albums = Album.filter_from_db()
+        choices = [(None,"Select Album")]
         for album in albums:
             choices.append((album.id,album.title))
         return choices
@@ -150,17 +176,30 @@ class MusicMixin(HasPermissionMixin,PartialTemplateMixin):
 class MusicListView(MusicMixin,ListView):
     template_name = "music/music_list.html"
     paginate_by = 10
+    authorized_groups = ["admin","artist","artist_manager"]
+
 
     def get_context_data(self, **kwargs):
         context = {}
         context["object_list"] = self.get_queryset()
+        context["authorized_groups"] = ["admin","artist"]
         return context
 
     def get_queryset(self):
         search = self.request.GET.get("q")
+        user = self.request.user
         filter_args = {}
         if search:
             filter_args["title__icontains"] = f"%{search}%"
+
+        if user.user_type == "artist":
+            print(user.id)
+            return Music.artist_filter(user_id=user.id,**filter_args)
+        elif user.user_type == "artist_manager":
+            return Music.manager_filter(manager_user_id=user.id,**filter_args)
+
+
+        
 
         return Music.filter_from_db(**filter_args)
 

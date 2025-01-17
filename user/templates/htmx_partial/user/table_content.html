@@ -11,9 +11,8 @@
               <th class="min-w-50px sorting" tabindex="0" >SN</th>
               <th class="min-w-125px sorting" tabindex="0" >Full Name</th>
               <th class="min-w-125px sorting" tabindex="0" >Email</th>
-             
               <th class="min-w-125px sorting" tabindex="0" >User Type</th>
-              <th class="min-w-125px sorting" tabindex="0" >Level</th>
+              <th class="min-w-125px sorting" tabindex="0" >Created At</th>
 
               <th class="text-end min-w-70px sorting_disabled" rowspan="1" colspan="1" aria-label="Actions"
                 style="width: 200px;">Actions</th>
@@ -43,13 +42,11 @@
                       </a>
                      </td>
                      <td>{{object.email}}</td>
-                     <td>{{object.created_at}}</td>
                      
                      <td>{{object.user_type}}</td>
-                     <td>{{object.job_level_str}}</td>
-                     <td>{{object.deadline}}</td>
+                     <td>{{object.created_at}}</td>
 
-                    <td class="text-end ">
+                   
                       <td class="text-end">
                         <a href="#" class="btn btn-sm btn-light btn-active-light-primary" data-kt-menu-trigger="click"
                            data-kt-menu-placement="bottom-end">
@@ -81,7 +78,6 @@
                            <!--end::Menu item-->
                         </div>
                      </td>
-                    </td>
               </tr>
               {%empty%}
               {% include 'components/empty.html' with  title="User"%}

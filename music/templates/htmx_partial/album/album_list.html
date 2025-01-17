@@ -84,6 +84,7 @@
         
    
                <!--begin::Add customer-->
+               {% if request.user.user_type in authorized_groups %}
                <a 
                hx-get="{% url 'album_create' %}"
                hx-target="#body-div"
@@ -91,6 +92,7 @@
                class="btn btn-primary mx-5"
                id="create-job-btn">Create Album</a>
                <!--end::Add customer-->
+               {% endif %}
 
       </div>
       <!--end::Toolbar-->

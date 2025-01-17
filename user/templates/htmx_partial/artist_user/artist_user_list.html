@@ -48,16 +48,16 @@
                  
               </div>
               <!--end::Search-->
-              <div class="ms-1">
+             {% comment %} <div class="ms-1">
                 <label>Date From</label>
                 <input class="form-control" onChange="submitForm()" name="date_from" type="date" value="{{request.GET.date_from}}">
 
               </div>
               <div class="ms-1">
-                <label>Date To</label>
+                <label el>Date To</label>
                 <input class="form-control" name="date_to" onChange="submitForm()" type="date" value="{{request.GET.date_to}}">
 
-              </div>
+              </div> {% endcomment %}
 
               
 

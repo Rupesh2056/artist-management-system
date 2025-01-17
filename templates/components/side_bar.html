@@ -11,39 +11,13 @@
 
         {% if request.user.user_type == 'admin' %}
             {%include 'components/menu_item.html' with path="index" url='index' title='Home' icon="bi bi-box" %}
-
             {%include 'components/menu_item.html' with path="index" url='user_list' title='User' icon="bi bi-box" %}
         {% endif %}
          {% if request.user.user_type == "admin" or request.user.user_type == "artist_manager"  %}
             {%include 'components/menu_item.html' with path="artist" url='artist_list' title='Artist' icon="bi bi-box" %}
         {% endif %}
-        {% if request.user.user_type == "admin" or request.user.user_type == "artist"  %}
-            {%include 'components/menu_item.html' with path="album" url='album_list' title='Album' icon="bi bi-box" %}
-            {%include 'components/menu_item.html' with path="music" url='music_list' title='Music' icon="bi bi-box" %}
-        {% endif %}
-
-
-        {%include 'components/menu_title.html' with title="Music"%}
-
-        
-        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {%if "province" in request.path or "district" in request.path or "city" in request.path or "standarddeliverycharge" in request.path or "productdeliverycharge" in request.path %} show{%endif%}">
-            <span class="menu-link">
-                <span class="menu-icon">
-                    <i class="bi bi-box fs-3"></i>
-                </span>
-                <span class="menu-title">Item</span>
-                <span class="menu-arrow"></span>
-            </span>
-            <div class="menu-sub menu-sub-accordion menu-active-bg">
-                {% comment %} Commenting standard delivery charge of province, city and district {% endcomment %}
-{% comment %}                 
-                {%include 'components/menu_item.html' with path="province/" url='delivery:province_list' title='Sub Item 1' icon="bi bi-geo" %}
-                {%include 'components/menu_item.html' with path="district/" url='delivery:district_list' title='Sub Item 2' icon="bi bi-geo" %}
-                 {% endcomment %}
-
-            </div>
-        </div>
-
+        {%include 'components/menu_item.html' with path="album" url='album_list' title='Album' icon="bi bi-box" %}
+        {%include 'components/menu_item.html' with path="music" url='music_list' title='Music' icon="bi bi-box" %}
 
         </div>
         <!--end::Menu-->

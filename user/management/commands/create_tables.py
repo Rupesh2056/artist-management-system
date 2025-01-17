@@ -47,6 +47,7 @@ class Command(BaseCommand):
                 CREATE TABLE IF NOT EXISTS music_artist (
                     id SERIAL PRIMARY KEY,
                     user_id INT UNIQUE  REFERENCES user_user(id) ON DELETE CASCADE,
+                    artist_manager_id INT REFERENCES user_user(id) ON DELETE CASCADE,
                     first_album_release_year int,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

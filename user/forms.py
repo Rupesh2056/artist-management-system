@@ -74,7 +74,7 @@ class ArtistCreateForm(UserRegistrationForm):
     first_album_release_year = forms.IntegerField(required=False)
 
 
-class UserUpdateForn(UserForm):
+class UserUpdateForm(UserForm):
     def __init__(self, *args,email=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.email=email

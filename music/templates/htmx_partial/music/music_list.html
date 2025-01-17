@@ -60,7 +60,6 @@
               </div> {% endcomment %}
 
               
-
               <div class="ms-1">
                 <a  
                 {% comment %} hx-get="{% url 'candidate_list' %}" 
@@ -71,6 +70,7 @@
                 Clear
                 </a>
               </div>
+              
 
            </div>
            <!--begin::Card title-->
@@ -78,11 +78,13 @@
         </div>
      </form>
      <!--begin::Card toolbar-->
+     {% if request.user.user_type in authorized_groups %}
+
      <div class="card-toolbar">
       <!--begin::Toolbar-->
       <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
         
-   
+
                <!--begin::Add customer-->
                <a 
                hx-get="{% url 'music_create' %}"
@@ -97,6 +99,7 @@
      
    </div>
    <!--end::Card toolbar-->
+   {% endif %}
 
       
     
