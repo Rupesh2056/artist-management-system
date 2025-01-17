@@ -89,16 +89,20 @@ class ArtistListView(UserMixin,ListView):
     authorized_groups = ["admin","artist_manager"]
 
     def get_queryset(self):
-        search = self.request.GET.get("q")
+        return self.get_artist_list_queryset(self.request)
+    
+    @staticmethod
+    def get_artist_list_queryset(request):
+        search = request.GET.get("q")
         filter_args = {"user_type":"artist"}
         if search:
             filter_args["full_name__icontains"] = f"%{search}%"
         
-        if self.request.user.user_type == "artist_manager":
-            return User.manager_filter(manager_user_id=self.request.user.id,**filter_args)
+        if request.user.user_type == "artist_manager":
+            return User.manager_filter(manager_user_id=request.user.id,**filter_args)
         
 
-        return User.filter_from_db(**filter_args)
+        return User.filter_from_db(**filter_args)      
     
 
 class ArtistUserCreateView(UserCreateView):

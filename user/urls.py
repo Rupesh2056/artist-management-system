@@ -1,6 +1,7 @@
 
 from django.urls import path
 
+from user.export import ArtistExportView
 from user.views import ArtistListView, ArtistUserCreateView, UserCreateView, UserDeleteView, UserListView,UserUpdateView
 from user.auth_views import  UserLoginView, UserLogoutView, UserRegistrationView
 
@@ -19,6 +20,9 @@ urlpatterns = [
     path("artist/create/",ArtistUserCreateView.as_view(),name="artist_create"),
     path("artist/<int:pk>/update/",UserUpdateView.as_view(),name="artist_update"),
     path("artist/delete/",UserDeleteView.as_view(),name="artist_delete"),
+
+    path("artist/export/",ArtistExportView.as_view(),name="artist_export"),
+
 
 
 

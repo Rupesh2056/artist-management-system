@@ -14,6 +14,11 @@
           {% include 'components/export_download_toolbar.html' with search_title="Search Admin" %}
         {% endwith %}
       {% endwith %} {% endcomment %}
+      <div class="ms-1 mt-6">
+           
+         <a href="{% url "artist_export" %}?{% for key,val in request.GET.items %}&{{ key }}={{ val }}{% endfor %}" class="btn btn-light-primary me-3">Export</a>
+
+       </div>
       </div>
      
         <!--begin::Card header-->
@@ -37,7 +42,8 @@
                        type="text"  
                        hx-get="{% url 'artist_list' %}"
                        hx-vals='{"search":"true"}'
-                       hx-target = "#table-list"   
+                       hx-target = "#table-list" 
+                       hx-push-url = true  
       
                        hx-trigger="keyup changed delay:300ms"
                        data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" name="q"

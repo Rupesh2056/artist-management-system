@@ -24,8 +24,4 @@ class HasPermissionMixin:
                 return super().dispatch(request,*args,**kwargs)
             else:
                 return  render(request, "permission_denied.html")
-        return redirect("user_login")
-        
-
-
-
+        return redirect("user_login")  
