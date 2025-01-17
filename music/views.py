@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.views.generic import ListView
 from django.views.generic import CreateView
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
 # Create your views here.
 
@@ -149,7 +149,9 @@ class AlbumUpdateView(AlbumMixin,BaseUpdateView):
         return render(request,self.get_template_names(),context={"form":form})
     
 class AlbumDeleteView(AlbumMixin,DeleteMixin,View):
-    ...
+     def get(self, request):
+        status = self.remove_from_DB(request)
+        return JsonResponse({"deleted": status})
 
 
 
@@ -196,7 +198,6 @@ class MusicListView(MusicMixin,ListView):
             filter_args["album_id"] = int(album_id)
 
         if user.user_type == "artist":
-            print(user.id)
             return Music.artist_filter(user_id=user.id,**filter_args)
         elif user.user_type == "artist_manager":
             return Music.manager_filter(manager_user_id=user.id,**filter_args)

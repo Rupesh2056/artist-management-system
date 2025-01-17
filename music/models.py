@@ -22,14 +22,14 @@ class GenreEnum(str,Enum):
 class Artist(CustomBaseModel):
     id : int = None
     user_id : int = None
-    artist_manager_id : int = None
+    artist_manager_id : Optional[int] = None
     first_album_release_year : Optional[int]  = None
     created_at : datetime.datetime = datetime.datetime.now()
     updated_at : datetime.datetime = datetime.datetime.now()
 
 
     class Meta:
-        foreign_keys = {"user_id":User,"artist_manager_id":User}
+        foreign_keys = {"user_id":User}
         read_only_fields = ["id"]
 
 
@@ -109,7 +109,7 @@ class Music(CustomBaseModel):
             actual_field_name = key.split('__')[0]
             if  actual_field_name in fields:
                 if "__" in key:
-                    queries.append(f" Lower({actual_field_name}) LIKE %s ")
+                    queries.append(f" Lower(music.{actual_field_name}) LIKE %s ")
                     values.append(f"%{val}%")
                 else:
                     queries.append(f"{key} = %s ")
@@ -142,7 +142,7 @@ class Music(CustomBaseModel):
             actual_field_name = key.split('__')[0]
             if  actual_field_name in fields:
                 if "__" in key:
-                    queries.append(f" Lower({actual_field_name}) LIKE %s ")
+                    queries.append(f" Lower(music.{actual_field_name}) LIKE %s ")
                     values.append(f"%{val}%")
                 else:
                     queries.append(f"{key} = %s ")
@@ -154,7 +154,7 @@ class Music(CustomBaseModel):
                     album.id=music.album_id JOIN {Artist.get_table_name()} artist on album.artist_id=artist.id JOIN
                     user_user u on u.id=artist.user_id where u.id=%s """    
         if queries:    
-            sql_query += " AND" + " AND ".join(queries)
+            sql_query += " AND " + " AND ".join(queries)
         rows = execute_select_query(sql_query,tuple(values))
         if rows:
             qs = []

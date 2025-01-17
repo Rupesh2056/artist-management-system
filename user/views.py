@@ -64,6 +64,7 @@ class UserCreateView(UserMixin,View):
 class UserUpdateView(UserMixin,BaseUpdateView):
     form_class = UserUpdateForm
     template_name = "update.html"
+    authorized_groups = ["admin","artist_manager"]
 
     def post(self,request,*args,**kwargs):
         instance = self.get_object()
