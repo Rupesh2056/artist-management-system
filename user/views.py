@@ -82,6 +82,7 @@ class UserDeleteView(UserMixin,DeleteMixin,View):
 # Artist
 class ArtistListView(UserMixin,ListView):
     template_name = "artist_user/artist_user_list.html"
+    template_dir="artist_user/"
     success_url = "artist_list"
     paginate_by = 10
     authorized_groups = ["admin","artist_manager"]

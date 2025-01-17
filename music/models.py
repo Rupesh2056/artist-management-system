@@ -67,8 +67,9 @@ class Album(CustomBaseModel):
                 raise InvalidAttributeError(key,cls)
         sql_query = f"""
                     SELECT * FROM {cls.get_table_name()} album JOIN {Artist.get_table_name()} artist ON
-                    album.artist_id=artist.id WHERE artist.artist_manager_id=%s """        
-        sql_query +=   "AND".join(queries)
+                    album.artist_id=artist.id  WHERE artist.artist_manager_id=%s """      
+        if queries:  
+            sql_query +=  " AND "  + "AND".join(queries)
         rows = execute_select_query(sql_query,tuple(values))
         if rows:
             qs = []
@@ -121,7 +122,7 @@ class Music(CustomBaseModel):
                     album.artist_id = artist.id where artist.artist_manager_id=%s """       
 
         if queries:
-            sql_query +=  "AND".join(queries)
+            sql_query +=" AND " + "AND".join(queries)
         rows = execute_select_query(sql_query,tuple(values))
         if rows:
             qs = []
@@ -153,7 +154,7 @@ class Music(CustomBaseModel):
                     album.id=music.album_id JOIN {Artist.get_table_name()} artist on album.artist_id=artist.id JOIN
                     user_user u on u.id=artist.user_id where u.id=%s """    
         if queries:    
-            sql_query +=  " WHERE " " AND ".join(queries)
+            sql_query += " AND" + " AND ".join(queries)
         rows = execute_select_query(sql_query,tuple(values))
         if rows:
             qs = []

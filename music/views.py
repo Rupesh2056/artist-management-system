@@ -187,10 +187,13 @@ class MusicListView(MusicMixin,ListView):
 
     def get_queryset(self):
         search = self.request.GET.get("q")
+        album_id = self.request.GET.get("album")
         user = self.request.user
         filter_args = {}
         if search:
             filter_args["title__icontains"] = f"%{search}%"
+        if album_id:
+            filter_args["album_id"] = int(album_id)
 
         if user.user_type == "artist":
             print(user.id)

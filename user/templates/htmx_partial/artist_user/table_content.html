@@ -38,9 +38,14 @@
                       hx-push-url = "true"
                       hx-target="#body-div"
                        > {% endcomment %}
-                        <a>
-                      {{object.full_name}}
-                      </a>
+                       <a
+                       class="link cursor-pointer"
+                       hx-get="{% url 'album_list' %}?artist={{object.artist_profile.id}}" 
+                       hx-push-url = "true"
+                       hx-target="#body-div"
+                        >
+                       {{object.full_name}}
+                       </a>
                      </td>
                      <td>{{object.email}}</td>
                      <td>{{object.artist_profile.first_album_release_year}}</td>

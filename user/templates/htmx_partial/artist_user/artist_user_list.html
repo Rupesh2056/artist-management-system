@@ -38,9 +38,7 @@
                        hx-get="{% url 'artist_list' %}"
                        hx-vals='{"search":"true"}'
                        hx-target = "#table-list"   
-                       {% if spinner %}
-                       hx-indicator="#table-spinner"
-                       {% endif %}
+      
                        hx-trigger="keyup changed delay:300ms"
                        data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" name="q"
                        placeholder="Search Artist" value="{{request.GET.q}}"

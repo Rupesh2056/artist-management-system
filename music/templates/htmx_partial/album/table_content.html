@@ -42,7 +42,12 @@
                         hx-push-url = "true"
                         hx-target="#body-div"
                         > {% endcomment %}
-                          <a>
+                        <a
+                        class="link cursor-pointer"
+                        hx-get="{% url 'music_list'%}?album={{object.id}}" 
+                        hx-push-url = "true"
+                        hx-target="#body-div"
+                         >
                         {{object.title}}
                         </a>
                       </td>
@@ -112,7 +117,12 @@
                         hx-push-url = "true"
                         hx-target="#body-div"
                         > {% endcomment %}
-                          <a>
+                        <a
+                        class="link cursor-pointer"
+                        hx-get="{% url 'music_list'%}?album={{object.id}}" 
+                        hx-push-url = "true"
+                        hx-target="#body-div"
+                         >
                         {{object.title}}
                         </a>
                       </td>
