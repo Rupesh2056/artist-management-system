@@ -94,5 +94,9 @@ class UserLoginForm(BaseForm,forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
 
 
+class ArtistBulkUploadForm(forms.Form):
+    csv_file = forms.FileField(label="Upload a CSV file.")
+
+
     
 

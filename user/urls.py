@@ -1,7 +1,7 @@
 
 from django.urls import path
 
-from user.export import ArtistExportView
+from user.import_export import ArtistExportView, BulkUploadView
 from user.views import ArtistListView, ArtistUserCreateView, UserCreateView, UserDeleteView, UserListView,UserUpdateView
 from user.auth_views import  UserLoginView, UserLogoutView, UserRegistrationView
 
@@ -22,6 +22,7 @@ urlpatterns = [
     path("artist/delete/",UserDeleteView.as_view(),name="artist_delete"),
 
     path("artist/export/",ArtistExportView.as_view(),name="artist_export"),
+    path("artist/import/",BulkUploadView.as_view(),name="artist_import"),
 
 
 
