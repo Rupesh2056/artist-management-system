@@ -1,5 +1,8 @@
 from user.db_utils import get_user
 from django.http import JsonResponse
+from django.http import HttpResponse
+import csv
+from datetime import datetime
 
 class BaseForm:
     def __init__(self,*args,**kwargs):
@@ -56,3 +59,27 @@ class DeleteMixin:
     def get(self, request):
         status = self.remove_from_DB(request)
         return JsonResponse({"deleted": status})
+    
+
+class ExportMixin:
+    fields = []
+    name = ""
+    queryset = None
+    obj_list = []
+
+    def get(self, *args, **kwargs):
+        response = HttpResponse(content_type="text/csv")
+        date = datetime.now().strftime("%Y-%m-%d")
+        response["Content-Disposition"] = "attachment; filename={}.csv".format(
+            f"{self.name}-{date}"
+        )
+        writer = csv.writer(response)
+        writer.writerow(self.fields)
+        self.write_rows(writer, self.get_queryset())
+        return response
+
+    def write_rows(self, writer, queryset):
+        pass
+
+    def get_queryset(self, *args, **kwargs):
+        return self.queryset
