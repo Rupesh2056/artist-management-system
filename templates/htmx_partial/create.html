@@ -16,7 +16,7 @@
          {% elif field.field.widget.input_type == "textarea" or field.field.widget.input_type == "checkbox" %}
                 <div class="col-md-12 fv-row fv-plugins-icon-container">
           {% else %}
-            <div id="id_div_{{field.field.label}}">
+            <div id="id_div_{{field.field.label}}" class="col-md-6">
           {% endif %}
             <p class="form-group">
                   {% if field.field.widget.input_type == "checkbox" %}

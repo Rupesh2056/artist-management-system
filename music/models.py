@@ -29,7 +29,9 @@ class Artist(CustomBaseModel):
 
 
     class Meta:
-        foreign_keys = {"user_id":User}
+        foreign_keys = [{"field":"user_id","model":User},
+                        {"field":"artist_manager_id","model":User,"related_name":"artist_manager"}
+                        ]
         read_only_fields = ["id"]
 
 
@@ -45,7 +47,7 @@ class Album(CustomBaseModel):
 
 
     class Meta:
-        foreign_keys = {"artist_id":Artist}
+        foreign_keys = [{"field":"artist_id","model":Artist,"related_name":"artist"}]
         read_only_fields = ["id"]
 
     
@@ -95,7 +97,7 @@ class Music(CustomBaseModel):
     updated_at : datetime.datetime = datetime.datetime.now()
 
     class Meta:
-        foreign_keys = {"album_id":Album}
+        foreign_keys = [{"field":"album_id","model":Artist,"related_name":"album"}]
         read_only_fields = ["id"]
 
 

@@ -80,8 +80,11 @@ class ForeignKeyMeta(ModelMetaclass,type):
         # Create the new class
         new_cls = super().__new__(cls, name, bases, dct)
 
-        foreign_keys = getattr(new_cls.Meta, "foreign_keys", {})
-        for foreign_key_field,related_model in foreign_keys.items():
+        foreign_keys = getattr(new_cls.Meta, "foreign_keys", [])
+        for foreign_key_dict in foreign_keys:
+            related_model = foreign_key_dict["model"]
+            foreign_key_field = foreign_key_dict["field"]
+            related_name = foreign_key_dict.get("related_name")
             # Define a dynamic property for each foreign key
             def foreign_key_property(self, related_model=related_model, foreign_key_field=foreign_key_field):
                 foreign_key_id = getattr(self, foreign_key_field, None)
@@ -90,7 +93,8 @@ class ForeignKeyMeta(ModelMetaclass,type):
                         return related_model.get_from_db(id=foreign_key_id)
                 return None
             # Add the property to the class
-            setattr(new_cls, related_model.__name__.lower(), property(foreign_key_property))
+            related_name = related_name if related_name else related_model.__name__.lower()
+            setattr(new_cls, related_name, property(foreign_key_property))
 
         return new_cls
 
