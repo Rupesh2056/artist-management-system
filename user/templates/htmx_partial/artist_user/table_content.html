@@ -77,7 +77,7 @@
                            <!--end::Menu item-->
                            <!--begin::Menu item-->
                            <div class="menu-item px-3">
-                                 {% include 'components/dropdown_action.html' with title="Update" hx_url="user_update"  pk=object.id   %}
+                                 {% include 'components/dropdown_action.html' with title="Update" hx_url="artist_update"  pk=object.id   %}
                            </div>
                            <div class="menu-item px-3">
                               <a onclick="remove({{object.id}},'{% url "user_delete" %}','{{object}}',)" class="menu-link px-3" id="obj"

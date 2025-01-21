@@ -2,7 +2,7 @@
 from django.urls import path
 
 from user.import_export import ArtistExportView, BulkUploadView
-from user.views import ArtistListView, ArtistUserCreateView, UserCreateView, UserDeleteView, UserListView,UserUpdateView
+from user.views import ArtistListView, ArtistUpdateView, ArtistUserCreateView, UserCreateView, UserDeleteView, UserListView,UserUpdateView
 from user.auth_views import  UserLoginView, UserLogoutView, UserRegistrationView
 
 urlpatterns = [
@@ -18,7 +18,7 @@ urlpatterns = [
 
     path("artist/",ArtistListView.as_view(),name="artist_list"),
     path("artist/create/",ArtistUserCreateView.as_view(),name="artist_create"),
-    path("artist/<int:pk>/update/",UserUpdateView.as_view(),name="artist_update"),
+    path("artist/<int:pk>/update/",ArtistUpdateView.as_view(),name="artist_update"),
     path("artist/delete/",UserDeleteView.as_view(),name="artist_delete"),
 
     path("artist/export/",ArtistExportView.as_view(),name="artist_export"),

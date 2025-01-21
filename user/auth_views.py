@@ -65,5 +65,5 @@ class UserLogoutView(View):
     def get(self,request,*args,**kwargs):
         if 'user_email' in request.session:
             del request.session['user_email']
-        messages.success(request,"You have been logged out.Please Log in again to continue.")
+        messages.success(request,"You have been logged out.")
         return redirect("user_login")

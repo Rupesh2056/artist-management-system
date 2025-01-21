@@ -44,10 +44,11 @@ class AlbumMixin(HasPermissionMixin,PartialTemplateMixin):
     success_url = reverse_lazy("album_list")
     template_dir="album/"
     authorized_groups = ["admin","artist"]
+    
 
-    def get(self,request,*args,**kwargs):
-        context = self.get_context_data(**kwargs)   
-        return render(request,self.get_template_names(),context)
+    # def get(self,request,*args,**kwargs):
+    #     context = self.get_context_data(**kwargs)   
+    #     return render(request,self.get_template_names(),context)
     
     def get_choices(self):
         artists = Artist.filter_from_db()
@@ -77,8 +78,7 @@ class AlbumListView(AlbumMixin,ListView):
     authorized_groups = ["admin","artist_manager","artist"]
 
     def get_context_data(self, **kwargs):
-        context = {}
-        context["object_list"] = self.get_queryset()
+        context = super().get_context_data()
         context["authorized_groups"] = ["admin","artist"]
         return context
 
@@ -182,8 +182,7 @@ class MusicListView(MusicMixin,ListView):
 
 
     def get_context_data(self, **kwargs):
-        context = {}
-        context["object_list"] = self.get_queryset()
+        context = super().get_context_data()
         context["authorized_groups"] = ["admin","artist"]
         return context
 

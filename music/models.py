@@ -97,7 +97,7 @@ class Music(CustomBaseModel):
     updated_at : datetime.datetime = datetime.datetime.now()
 
     class Meta:
-        foreign_keys = [{"field":"album_id","model":Artist,"related_name":"album"}]
+        foreign_keys = [{"field":"album_id","model":Album,"related_name":"album"}]
         read_only_fields = ["id"]
 
 

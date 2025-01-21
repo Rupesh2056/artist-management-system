@@ -132,3 +132,5 @@ class ArtistUserCreateView(UserCreateView):
             return redirect(self.success_url)
         return render(request,self.get_template_names(),context={"form":form})
 
+class ArtistUpdateView(UserUpdateView):
+    success_url = reverse_lazy("artist_list")
